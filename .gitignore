@@ -1,0 +1,17 @@
+# Python
+__pycache__/
+*.pyc
+.venv/
+venv/
+.env
+
+# OS
+.DS_Store
+
+# 專案特有：使用者上傳的 MHT 原始檔與 NPB 名冊快取不進版控
+uploads/*
+!uploads/.gitkeep
+cache/*
+!cache/.gitkeep
+*.mht
+*.mhtml

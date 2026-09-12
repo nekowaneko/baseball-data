@@ -70,5 +70,5 @@ def render_html(data, template_text):
         raise ValueError(f'範本缺少資料佔位 {DATA_PLACEHOLDER}')
     payload = json.dumps(data, ensure_ascii=False)
     #避免資料裡的 </script> 提早關閉標籤
-    payload = payload.replace('</', '<\/')
+    payload = payload.replace('</', r'<\/')
     return template_text.replace(DATA_PLACEHOLDER, payload)

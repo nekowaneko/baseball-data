@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>配球資料處理窗口</title>
+<style>
+/* 與產出網頁同一套配色，白底 + 紺 */
+:root{
+  --paper:#FFFFFF; --paper2:#EEF3F9; --rule:#C7D4E4;
+  --ink:#0B2F62; --muted:#5B6E85; --navy:#0B2F62; --sky:#0090D4;
+  --warn:#9B2C3B; --good:#1B7A4B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Noto Sans TC","Yu Gothic",system-ui,sans-serif;
+  line-height:1.6}
+.wrap{max-width:820px;margin:0 auto;padding:28px clamp(10px,3vw,18px) 80px}
+h1{font-size:1.6rem;margin:0 0 4px;font-weight:800}
+.sub{color:var(--muted);font-size:.82rem;margin:0 0 26px}
+.drop{border:2px dashed var(--rule);background:var(--paper2);padding:28px 18px;text-align:center}
+.drop.over{border-color:var(--sky);background:#E3F1FA}
+.drop p{margin:0 0 12px;font-size:.9rem;color:var(--muted)}
+button{font-family:inherit;font-size:.92rem;font-weight:800;padding:10px 18px;
+  border:2px solid var(--ink);background:var(--ink);color:#fff;cursor:pointer}
+button[disabled]{opacity:.45;cursor:not-allowed}
+.files{margin:14px 0 0;font-size:.82rem;color:var(--muted);list-style:none;padding:0}
+.stages{display:flex;flex-wrap:wrap;gap:6px;margin:26px 0 8px}
+.stage{flex:1 1 110px;border:1px solid var(--rule);background:var(--paper2);padding:8px 10px;font-size:.78rem}
+.stage b{display:block;font-size:.72rem;color:var(--muted);font-weight:800}
+.stage[data-state="running"]{border-color:var(--sky);background:#E3F1FA}
+.stage[data-state="ok"]{border-color:var(--good);background:#E6F4EC}
+.stage[data-state="failed"]{border-color:var(--warn);background:#F9E9EC;color:var(--warn)}
+.barwrap{height:10px;border:1px solid var(--rule);background:var(--paper2);overflow:hidden}
+.barwrap i{display:block;height:100%;width:0;background:var(--sky);transition:width .25s}
+.result{margin:20px 0;padding:12px 14px;border-left:4px solid var(--rule);background:var(--paper2);font-size:.88rem}
+.result.ok{border-color:var(--good)}
+.result.bad{border-color:var(--warn);color:var(--warn)}
+.logbar{display:flex;align-items:center;justify-content:space-between;margin:26px 0 6px}
+.logbar h2{font-size:1rem;margin:0;font-weight:800}
+.logbar button{padding:5px 12px;font-size:.78rem;background:var(--paper);color:var(--ink)}
+#log{border:1px solid var(--rule);background:#FBFCFE;height:280px;overflow:auto;
+  font-family:ui-monospace,Menlo,Consolas,monospace;font-size:.76rem;padding:8px 10px;white-space:pre-wrap}
+#log .warn{color:#8A6100}
+#log .error{color:var(--warn);font-weight:700}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <h1>配球資料處理窗口</h1>
+  <p class="sub">丟進 Short-Stop 的 MHT 存檔，跑完八階段後產出可離線開啟的對照表。檔名不看，依內容判斷分頁。</p>
+
+  <div class="drop" id="drop">
+    <p>把 MHT 檔拖進來，或選擇檔案</p>
+    <input type="file" id="picker" multiple accept=".mht,.mhtml" hidden>
+    <button type="button" id="choose">選擇檔案</button>
+    <button type="button" id="run" disabled>開始處理</button>
+    <ul class="files" id="files"></ul>
+  </div>
+
+  <div class="stages" id="stages"></div>
+  <div class="barwrap"><i id="bar"></i></div>
+
+  <div class="result" id="result" hidden></div>
+
+  <div class="logbar">
+    <h2>執行日誌</h2>
+    <button type="button" id="copy">複製全部</button>
+  </div>
+  <div id="log"></div>
+</div>
+<script src="app.js"></script>
+</body>
+</html>

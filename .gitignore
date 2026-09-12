@@ -19,3 +19,6 @@ cache/*
 !cache/.gitkeep
 
 # 注意：tests/fixtures/ 底下的 *.mht 是回歸測試樣本，必須進版控，故不設全域 *.mht 規則
+
+# 每次執行產生的即時產物（report-<run>.html），固定產物 out/report.html 仍進版控
+out/report-*.html

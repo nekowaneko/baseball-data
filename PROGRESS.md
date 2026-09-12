@@ -43,3 +43,14 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
     但規格是「低於 10 打數」。修法：更正測試斷言，不動實作（門檻值來自 HANDOFF.md）。
 - 各驗收項失敗次數：V15 1、內嵌 JSON 合法性 1，其餘 0
 - 追加修正：測試中 `'<\/'` 造成 DeprecationWarning，改為原始字串（不計入修正輪數，非驗收失敗）
+
+## T5 伺服器、前端與端到端
+
+- 修正輪數：1
+- 錯誤指紋：
+  - `c92b-bytes-nonascii`：`SyntaxError: bytes can only contain ASCII literal characters`
+    ——測試裡的 bytes 字面值寫了中文。修法：改以 `str.encode('utf-8')` 產生位元組。
+- 各驗收項失敗次數：V05 0、V14 0、V16 0、V18 0
+- 追加修正：`core/render.py` 的 `'<\/'` 造成 DeprecationWarning，改為原始字串（非驗收失敗）
+- 額外人工冒煙測試（不計入自動驗收）：在 127.0.0.1:8799 啟動伺服器，
+  上傳五份 MHT → SSE 收到 50 筆事件 → 整體成功 → 下載產物 42,626 bytes 且含「綜觀」區塊。

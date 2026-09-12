@@ -1,49 +1,50 @@
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "接收與分類檔案 開始", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "shortstop_0_(1).mht 判定為 basic", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "shortstop_1_(1).mht 判定為 mix", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "shortstop_2_(1).mht 判定為 pitch", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "shortstop_3_(1).mht 判定為 situational", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "shortstop_4_(1).mht 判定為 vs", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S1", "level": "info", "msg": "接收與分類檔案 成功 耗時 305ms", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "解析各分頁 開始", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "vs_data 解析完成", "detail": {"筆數": 8}}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "mix 解析完成", "detail": {"筆數": 6}}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "pitch 解析完成", "detail": {"筆數": 2}}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "team_totals 解析完成", "detail": {"筆數": 6}}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "split_totals 解析完成", "detail": {"筆數": 3}}
-{"ts": "2026-09-12T22:05:53", "stage": "S2", "level": "info", "msg": "解析各分頁 成功 耗時 303ms", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "info", "msg": "一致性稽核 開始", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "ロッテ 的 ab 差 1", "detail": {"team": "ロッテ", "field": "ab", "parsed": 34, "official": 35, "diff": 1}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "ソフトバンク 的 ab 差 16", "detail": {"team": "ソフトバンク", "field": "ab", "parsed": 36, "official": 52, "diff": 16}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "ソフトバンク 的 h 差 3", "detail": {"team": "ソフトバンク", "field": "h", "parsed": 5, "official": 8, "diff": 3}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "ソフトバンク 的 hr 差 1", "detail": {"team": "ソフトバンク", "field": "hr", "parsed": 1, "official": 2, "diff": 1}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "DeNA 的 ab 差 -2", "detail": {"team": "DeNA", "field": "ab", "parsed": 2, "official": 0, "diff": -2}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "DeNA 的 h 差 -1", "detail": {"team": "DeNA", "field": "h", "parsed": 1, "official": 0, "diff": -1}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "warn", "msg": "阪神 的 ab 差 -2", "detail": {"team": "阪神", "field": "ab", "parsed": 2, "official": 0, "diff": -2}}
-{"ts": "2026-09-12T22:05:53", "stage": "S3", "level": "info", "msg": "一致性稽核 成功 耗時 1ms", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "info", "msg": "取得投手左右手 開始", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 西武 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 ヤクルト 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 DeNA 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 阪神 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 巨人 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 中日 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "warn", "msg": "取不到 広島 的名冊", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "info", "msg": "取得 82 筆左右手資料", "detail": null}
-{"ts": "2026-09-12T22:05:53", "stage": "S4", "level": "info", "msg": "取得投手左右手 成功 耗時 4ms", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S5", "level": "info", "msg": "姓名比對 開始", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S5", "level": "info", "msg": "對照表 82 筆", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S5", "level": "info", "msg": "姓名比對 成功 耗時 0ms", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S6", "level": "info", "msg": "聚合統計 開始", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S6", "level": "warn", "msg": "DeNA 東 克樹 查不到左右手，留空不猜", "detail": {"team": "DeNA", "name": "東 克樹", "ab": 2}}
-{"ts": "2026-09-12T22:05:54", "stage": "S6", "level": "warn", "msg": "DeNA 中川 颯 查不到左右手，留空不猜", "detail": {"team": "DeNA", "name": "中川 颯", "ab": 0}}
-{"ts": "2026-09-12T22:05:54", "stage": "S6", "level": "warn", "msg": "ヤクルト 小川 泰弘 查不到左右手，留空不猜", "detail": {"team": "ヤクルト", "name": "小川 泰弘", "ab": 1}}
-{"ts": "2026-09-12T22:05:54", "stage": "S6", "level": "warn", "msg": "ヤクルト 星 知弥 查不到左右手，留空不猜", "detail": {"team": "ヤクルト", "name": "星 知弥", "ab": 1}}
-{"ts": "2026-09-12T22:05:54", "stage": "S6", "level": "info", "msg": "聚合統計 成功 耗時 3ms", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S7", "level": "info", "msg": "交叉驗證 開始", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S7", "level": "info", "msg": "對左重建 52 打數 8 安打，官方 52 打數 8 安打", "detail": {"parsed_ab": 52, "parsed_h": 8, "official_ab": 52, "official_h": 8, "match": true}}
-{"ts": "2026-09-12T22:05:54", "stage": "S7", "level": "warn", "msg": "對右重建 141 打數 38 安打，官方 157 打數 41 安打", "detail": {"parsed_ab": 141, "parsed_h": 38, "official_ab": 157, "official_h": 41, "match": false}}
-{"ts": "2026-09-12T22:05:54", "stage": "S7", "level": "info", "msg": "交叉驗證 成功 耗時 0ms", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S8", "level": "info", "msg": "產出 HTML 開始", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S8", "level": "info", "msg": "產出 C:\\Users\\Dominic\\Desktop\\ml_demo\\baseball-data\\out\\report.html", "detail": null}
-{"ts": "2026-09-12T22:05:54", "stage": "S8", "level": "info", "msg": "產出 HTML 成功 耗時 2ms", "detail": null}
+{"ts": "2026-09-12T22:36:32", "stage": "S1", "level": "info", "msg": "接收與分類檔案 開始", "detail": null}
+{"ts": "2026-09-12T22:36:32", "stage": "S1", "level": "info", "msg": "shortstop_0_(1).mht 判定為 basic", "detail": null}
+{"ts": "2026-09-12T22:36:32", "stage": "S1", "level": "info", "msg": "shortstop_1_(1).mht 判定為 mix", "detail": null}
+{"ts": "2026-09-12T22:36:32", "stage": "S1", "level": "info", "msg": "shortstop_2_(1).mht 判定為 pitch", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S1", "level": "info", "msg": "shortstop_3_(1).mht 判定為 situational", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S1", "level": "info", "msg": "shortstop_4_(1).mht 判定為 vs", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S1", "level": "info", "msg": "接收與分類檔案 成功 耗時 315ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "解析各分頁 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "vs_data 解析完成", "detail": {"筆數": 8}}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "mix 解析完成", "detail": {"筆數": 6}}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "pitch 解析完成", "detail": {"筆數": 2}}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "team_totals 解析完成", "detail": {"筆數": 6}}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "split_totals 解析完成", "detail": {"筆數": 3}}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "split_display 解析完成", "detail": {"筆數": 3}}
+{"ts": "2026-09-12T22:36:33", "stage": "S2", "level": "info", "msg": "解析各分頁 成功 耗時 349ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "info", "msg": "一致性稽核 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "ロッテ 的 ab 差 1", "detail": {"team": "ロッテ", "field": "ab", "parsed": 34, "official": 35, "diff": 1}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "ソフトバンク 的 ab 差 16", "detail": {"team": "ソフトバンク", "field": "ab", "parsed": 36, "official": 52, "diff": 16}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "ソフトバンク 的 h 差 3", "detail": {"team": "ソフトバンク", "field": "h", "parsed": 5, "official": 8, "diff": 3}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "ソフトバンク 的 hr 差 1", "detail": {"team": "ソフトバンク", "field": "hr", "parsed": 1, "official": 2, "diff": 1}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "DeNA 的 ab 差 -2", "detail": {"team": "DeNA", "field": "ab", "parsed": 2, "official": 0, "diff": -2}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "DeNA 的 h 差 -1", "detail": {"team": "DeNA", "field": "h", "parsed": 1, "official": 0, "diff": -1}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "warn", "msg": "阪神 的 ab 差 -2", "detail": {"team": "阪神", "field": "ab", "parsed": 2, "official": 0, "diff": -2}}
+{"ts": "2026-09-12T22:36:33", "stage": "S3", "level": "info", "msg": "一致性稽核 成功 耗時 3ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "info", "msg": "取得投手左右手 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 西武 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 ヤクルト 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 DeNA 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 阪神 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 巨人 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 中日 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "warn", "msg": "取不到 広島 的名冊", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "info", "msg": "取得 82 筆左右手資料", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S4", "level": "info", "msg": "取得投手左右手 成功 耗時 3ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S5", "level": "info", "msg": "姓名比對 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S5", "level": "info", "msg": "對照表 82 筆", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S5", "level": "info", "msg": "姓名比對 成功 耗時 0ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S6", "level": "info", "msg": "聚合統計 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S6", "level": "warn", "msg": "DeNA 東 克樹 查不到左右手，留空不猜", "detail": {"team": "DeNA", "name": "東 克樹", "ab": 2}}
+{"ts": "2026-09-12T22:36:33", "stage": "S6", "level": "warn", "msg": "DeNA 中川 颯 查不到左右手，留空不猜", "detail": {"team": "DeNA", "name": "中川 颯", "ab": 0}}
+{"ts": "2026-09-12T22:36:33", "stage": "S6", "level": "warn", "msg": "ヤクルト 小川 泰弘 查不到左右手，留空不猜", "detail": {"team": "ヤクルト", "name": "小川 泰弘", "ab": 1}}
+{"ts": "2026-09-12T22:36:33", "stage": "S6", "level": "warn", "msg": "ヤクルト 星 知弥 查不到左右手，留空不猜", "detail": {"team": "ヤクルト", "name": "星 知弥", "ab": 1}}
+{"ts": "2026-09-12T22:36:33", "stage": "S6", "level": "info", "msg": "聚合統計 成功 耗時 2ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S7", "level": "info", "msg": "交叉驗證 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S7", "level": "info", "msg": "對左重建 52 打數 8 安打，官方 52 打數 8 安打", "detail": {"parsed_ab": 52, "parsed_h": 8, "official_ab": 52, "official_h": 8, "match": true}}
+{"ts": "2026-09-12T22:36:33", "stage": "S7", "level": "warn", "msg": "對右重建 141 打數 38 安打，官方 157 打數 41 安打", "detail": {"parsed_ab": 141, "parsed_h": 38, "official_ab": 157, "official_h": 41, "match": false}}
+{"ts": "2026-09-12T22:36:33", "stage": "S7", "level": "info", "msg": "交叉驗證 成功 耗時 1ms", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S8", "level": "info", "msg": "產出 HTML 開始", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S8", "level": "info", "msg": "產出 C:\\Users\\Dominic\\Desktop\\ml_demo\\baseball-data\\out\\report.html", "detail": null}
+{"ts": "2026-09-12T22:36:33", "stage": "S8", "level": "info", "msg": "產出 HTML 成功 耗時 3ms", "detail": null}

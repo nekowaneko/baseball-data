@@ -109,6 +109,7 @@ def s2_parse(ctx):
         ('pitch', 'pitch', lambda h: parse_pitch.parse_pitch_types(h)),
         ('basic', 'team_totals', lambda h: parse_basic.parse_team_totals(h)),
         ('basic', 'split_totals', lambda h: parse_basic.parse_split_totals(h)),
+        ('basic', 'split_display', lambda h: parse_basic.parse_split_display(h)),
     ]
     for kind, key, parse in jobs:
         if kind not in pages:
@@ -177,7 +178,8 @@ def s8_render(ctx):
         ctx['stats'], ctx['unmatched'], ctx['audit'], ctx['cross'],
         ctx['mix'], ctx['pitch'], ctx['pitch_meta'], ctx['team_meta'],
         datetime.now().isoformat(timespec='seconds'), player=ctx['player'],
-        errors=ctx['errors'], min_ab=ctx['min_ab'])
+        errors=ctx['errors'], min_ab=ctx['min_ab'],
+        split_display=ctx['split_display'])
     html = render_html(data, template)
     os.makedirs(os.path.dirname(ctx['output_path']), exist_ok=True)
     with open(ctx['output_path'], 'w', encoding='utf-8') as f:
@@ -198,6 +200,7 @@ def new_context(files, roster_source, config, log, output_path, player=''):
         'files': files, 'roster_source': roster_source, 'log': log,
         'pages': {}, 'skipped': [], 'errors': [],
         'vs_data': {}, 'mix': {}, 'pitch': {}, 'team_totals': {}, 'split_totals': {},
+        'split_display': {},
         'audit': [], 'roster_rows': [], 'by_team': {}, 'by_name': {},
         'stats': {}, 'unmatched': [], 'cross': {},
         'pitch_meta': config['pitch_meta'], 'team_meta': config['team_meta'],
@@ -366,15 +369,38 @@ class Handler(BaseHTTPRequestHandler):
         pass
 
 
-#啟動伺服器
-def serve(port=None, root=ROOT):
+#取本機在區域網路上的 IP，只給提示訊息用，失敗就回 None
+def lan_ip():
+    import socket
+    sock = socket.socket(socket.AF_INET, socket.SOCK_DGRAM)
+    try:
+        sock.connect(('8.8.8.8', 80))     #不會真的送封包，只為問出對外網卡位址
+        return sock.getsockname()[0]
+    except OSError:
+        return None
+    finally:
+        sock.close()
+
+
+#啟動伺服器，host 預設只開本機；要讓手機連就傳 0.0.0.0
+def serve(port=None, root=ROOT, host='127.0.0.1'):
     config = load_config(root)
     Handler.config = config
     port = port or config['settings'].get('server_port', 8787)
-    server = ThreadingHTTPServer(('127.0.0.1', port), Handler)
+    server = ThreadingHTTPServer((host, port), Handler)
     print(f'配球資料處理窗口已啟動：http://127.0.0.1:{port}')
+    if host not in ('127.0.0.1', 'localhost'):
+        ip = lan_ip()
+        if ip:
+            print(f'同一個 Wi-Fi 的手機請開：http://{ip}:{port}')
     server.serve_forever()
 
 
 if __name__ == '__main__':
-    serve()
+    import argparse
+    ap = argparse.ArgumentParser(description='配球資料處理窗口')
+    ap.add_argument('--host', default='127.0.0.1',
+                    help='綁定位址，0.0.0.0 = 允許同網段的手機連入')
+    ap.add_argument('--port', type=int, default=None, help='覆寫 settings 的埠號')
+    args = ap.parse_args()
+    serve(port=args.port, host=args.host)

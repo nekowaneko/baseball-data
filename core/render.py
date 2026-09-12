@@ -43,15 +43,50 @@ def overview(stats, min_ab=MIN_AB_FOR_AVG):
     return result
 
 
+#把原站的字串數字轉成浮點數：去掉 % 與 km/h，破折號回 None
+#為什麼要轉：畫面要依用球比例排序、依比例畫長條，字串做不到，但原字串仍保留不動
+def to_number(text):
+    if text is None:
+        return None
+    cleaned = str(text).replace('%', '').replace('km/h', '').strip()
+    if cleaned in ('—', '-', ''):
+        return None
+    try:
+        return float(cleaned)
+    except ValueError:
+        return None
+
+
+#球種列表的數值版：{'対右投手': [{pitch, usage, velo, whiff, ops, avg, hr}], ...}
+#hr 是整數計數，其餘為浮點數；原始字串留在 data['pitch'] 不動
+def pitch_rows(pitch):
+    fields = (('share', 'usage'), ('speed', 'velo'), ('whiff', 'whiff'),
+              ('ops', 'ops'), ('avg', 'avg'))
+    rows = {}
+    for side, items in (pitch or {}).items():
+        converted = []
+        for item in items:
+            row = {'pitch': item.get('pitch', '')}
+            for source, key in fields:
+                row[key] = to_number(item.get(source))
+            count = to_number(item.get('hr'))
+            row['hr'] = 0 if count is None else int(count)
+            converted.append(row)
+        rows[side] = converted
+    return rows
+
+
 #組出網頁要用的完整資料包，純資料進純資料出
 def build_report_data(stats, unmatched, audit_diffs, cross, mix, pitch,
                       pitch_meta, team_meta, generated_at, player='', errors=None,
-                      min_ab=MIN_AB_FOR_AVG):
+                      min_ab=MIN_AB_FOR_AVG, split_display=None):
     return {
         'player': player,
         'generated_at': generated_at,
         'min_ab': min_ab,
         'overview': overview(stats, min_ab),
+        'split_display': dict(split_display or {}),
+        'pitch_rows': pitch_rows(pitch),
         'teams': mark_thin(stats, min_ab),
         'unmatched': list(unmatched),
         'audit': list(audit_diffs),

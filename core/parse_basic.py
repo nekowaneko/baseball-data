@@ -5,8 +5,13 @@ from core.parse_vs import to_int
 
 #對左右別表格的列標籤對應到左右手代號
 HAND_LABELS = {'対右': 'R', '対左': 'L', '対不明': 'U'}
-#表頭欄位對應到輸出鍵
+#表頭欄位對應到輸出鍵（只取可相加的欄位，稽核與交叉驗證用）
 TOTAL_COLUMNS = {'打数': 'ab', '安打': 'h', '本塁打': 'hr'}
+#顯示用欄位：原站已算好的率值，照字串原樣搬走，絕不自行加總或重算
+DISPLAY_COLUMNS = {'OPS': 'ops', '打率': 'avg', '本塁打': 'hr', '出塁率': 'obp',
+                   'K％': 'k', '打数': 'ab', '安打': 'h'}
+#視為「沒有資料」的儲存格文字
+BLANKS = ('—', '-', '')
 
 
 #取出一列的儲存格文字
@@ -58,6 +63,28 @@ def parse_split_totals(html_text):
         if values is not None:
             totals[hand] = values
     return totals
+
+
+#解析「対左右別の対戦成績」的顯示欄位，回傳 {'R': {ops, avg, obp, k, ab, ...}, 'L': {...}}
+#與 parse_split_totals 的差別：這裡連率值一起帶走，只為了畫面呈現，不參與任何計算
+def parse_split_display(html_text):
+    soup = BeautifulSoup(html_text, 'lxml')
+    table = _find_table(soup, '条件')
+    if table is None:
+        return {}
+    rows = table.find_all('tr')
+    head = _cells(rows[0])
+    display = {}
+    for row in rows[1:]:
+        cells = _cells(row)
+        hand = HAND_LABELS.get(cells[0] if cells else '')
+        if not hand:
+            continue
+        values = {DISPLAY_COLUMNS[key]: value
+                  for key, value in zip(head, cells) if key in DISPLAY_COLUMNS}
+        if any(v not in BLANKS for v in values.values()):
+            display[hand] = values
+    return display
 
 
 #解析「チーム別の対戦成績」，回傳 {球團: {ab, h, hr}}，未對戰過的球團不列入

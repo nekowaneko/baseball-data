@@ -55,6 +55,50 @@ def test_overview():
     assert result['L']['thin'] is False
 
 
+#原站的字串數字轉成浮點數：去掉單位，破折號與空白回 None
+def test_to_number():
+    assert render.to_number('38.0%') == 38.0
+    assert render.to_number('146.4km/h') == 146.4
+    assert render.to_number('.428') == 0.428
+    assert render.to_number('0.0%') == 0.0      #零是有效值，不可當成缺值
+    assert render.to_number('—') is None
+    assert render.to_number('') is None
+    assert render.to_number(None) is None
+    assert render.to_number('あ') is None      #轉不動就回 None，不拋例外
+
+
+#球種列的數值版供排序與長條使用；全壘打是整數計數，缺值補 0
+def test_pitch_rows():
+    rows = render.pitch_rows({'対左投手': [
+        {'pitch': 'ストレート', 'share': '38.0%', 'speed': '146.4km/h',
+         'whiff': '12.1%', 'ops': '.428', 'avg': '.111', 'hr': '1'},
+        {'pitch': 'カーブ', 'share': '4.9%', 'speed': '122.2km/h',
+         'whiff': '50.0%', 'ops': '—', 'avg': '—', 'hr': '0'},
+    ]})['対左投手']
+    assert rows[0] == {'pitch': 'ストレート', 'usage': 38.0, 'velo': 146.4,
+                       'whiff': 12.1, 'ops': 0.428, 'avg': 0.111, 'hr': 1}
+    assert rows[1]['ops'] is None               #原站沒給就留 None，畫面顯示破折號
+    assert rows[1]['hr'] == 0
+
+
+#原始字串必須原封不動留在 data['pitch']，數值版只是另外加一份
+def test_pitch_rows_keeps_raw_strings():
+    pitch = {'対左投手': [{'pitch': 'ストレート', 'share': '38.0%'}]}
+    data = render.build_report_data({}, [], [], {}, {}, pitch, {}, {}, '2026-09-12')
+    assert data['pitch']['対左投手'][0]['share'] == '38.0%'
+    assert data['pitch_rows']['対左投手'][0]['usage'] == 38.0
+
+
+#顯示用的左右合計照字串搬進資料包，沒有傳就留空字典
+def test_split_display_passthrough():
+    display = {'L': {'ops': '.451', 'ab': '52'}}
+    data = render.build_report_data({}, [], [], {}, {}, {}, {}, {}, '2026-09-12',
+                                    split_display=display)
+    assert data['split_display'] == display
+    assert render.build_report_data({}, [], [], {}, {}, {}, {}, {},
+                                    '2026-09-12')['split_display'] == {}
+
+
 #產出的 HTML 可解析，且含必要區塊與內嵌資料
 def test_render_html(template):
     data = render.build_report_data(

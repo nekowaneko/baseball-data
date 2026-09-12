@@ -1,0 +1,249 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>配球對照表</title>
+<style>
+/* 西武主場配色：白底 + レジェンドブルー（紺），左右投用兩代藍區分 */
+:root{
+  --paper:#FFFFFF; --paper2:#EEF3F9; --rule:#C7D4E4;
+  --ink:#0B2F62; --muted:#5B6E85; --navy:#0B2F62; --sky:#0090D4; --warn:#9B2C3B;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Noto Sans TC","Yu Gothic",system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;line-height:1.6}
+.wrap{max-width:960px;margin:0 auto;padding:28px clamp(10px,3vw,18px) 80px}
+.head{border-bottom:3px solid var(--navy);padding:0 0 16px;margin-bottom:26px}
+.head h1{font-size:1.75rem;margin:0 0 4px;font-weight:800}
+.head .sub{color:var(--muted);font-size:.82rem;margin:0}
+.switch{display:flex;border:2px solid var(--ink);margin:0 0 8px;overflow:hidden}
+.switch button{flex:1;padding:14px 8px;border:0;background:var(--paper2);color:var(--muted);
+  font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit}
+.switch button[aria-pressed="true"]{color:#fff}
+.switch button[data-hand="L"][aria-pressed="true"]{background:var(--sky)}
+.switch button[data-hand="R"][aria-pressed="true"]{background:var(--navy)}
+.layer{border-top:2px solid var(--navy);padding-top:14px;margin-top:40px}
+.layer h2{font-size:1.24rem;margin:0 0 2px;font-weight:800}
+.layer .lead{color:var(--muted);font-size:.82rem;margin:0 0 20px}
+h3{font-size:1.02rem;margin:22px 0 4px;font-weight:800}
+.note{color:var(--muted);font-size:.8rem;margin:0 0 14px}
+table{width:100%;border-collapse:collapse;margin:0 0 18px;font-size:.86rem}
+th,td{border:1px solid var(--rule);padding:7px 8px;text-align:right}
+th{background:var(--paper2);font-weight:800}
+th:first-child,td:first-child{text-align:left}
+.thin{color:var(--muted)}
+.bad{color:var(--warn);font-weight:800}
+.ok{color:var(--navy);font-weight:800}
+.bar{display:flex;height:22px;border:1px solid var(--rule);overflow:hidden}
+.bar span{display:block;height:100%}
+.mixrow{display:flex;align-items:center;gap:8px;margin-bottom:4px}
+.mixrow .cnt{width:42px;font-size:.76rem;font-weight:800;flex:none}
+.mixrow .bar{flex:1}
+.legend{display:flex;flex-wrap:wrap;gap:6px 14px;margin:10px 0 20px;font-size:.76rem}
+.legend i{display:inline-block;width:11px;height:11px;margin-right:5px;vertical-align:-1px}
+.gaps{border-top:2px solid var(--navy);margin-top:46px;padding-top:14px;font-size:.82rem;color:var(--muted)}
+.gaps li{margin-bottom:6px}
+@media(max-width:560px){table{font-size:.78rem}th,td{padding:6px 5px}}
+</style>
+</head>
+<body>
+<div class="wrap">
+  <div class="head">
+    <h1 id="title">配球對照表</h1>
+    <p class="sub" id="subtitle"></p>
+  </div>
+
+  <div class="switch" id="switch">
+    <button type="button" data-hand="R" aria-pressed="true">對右投</button>
+    <button type="button" data-hand="L" aria-pressed="false">對左投</button>
+  </div>
+  <p class="note" id="switch-note"></p>
+
+  <section class="layer">
+    <h2>綜觀</h2>
+    <p class="lead">不分球團的左右投表現，以及各球種的用球比例。</p>
+    <div id="overview"></div>
+    <h3>各球種的用球比例與應對成績</h3>
+    <div id="pitch-table"></div>
+  </section>
+
+  <section class="layer">
+    <h2>微觀</h2>
+    <p class="lead">單一球團下的左右投成績與不同球數的配球。</p>
+    <h3>對左右投的打擊成績</h3>
+    <div id="team-table"></div>
+    <h3>不同球數下的配球</h3>
+    <div id="mix"></div>
+  </section>
+
+  <section class="layer">
+    <h2>資料校驗</h2>
+    <p class="lead">交叉驗證、一致性稽核與未命中清單，全部攤在明處。</p>
+    <div id="checks"></div>
+  </section>
+
+  <div class="gaps">
+    <h3>資料的已知缺口</h3>
+    <ul id="gaps"></ul>
+  </div>
+</div>
+
+<script>
+// 常數定義
+const DATA = /*__DATA__*/{}
+const HANDS = { 'R': '對右投', 'L': '對左投' }
+const SUM_FIELDS = [['ab', '打數'], ['h', '安打'], ['hr', '全壘打'], ['so', '三振']]
+const FIELD_ZH = { 'ab': '打數', 'h': '安打', 'hr': '全壘打' }
+
+// 功能函數定義
+const el = (id) => document.getElementById(id)
+
+const esc = (text) => String(text === null || text === undefined ? '' : text)
+  .replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
+
+// 打率顯示：薄樣本不顯示打率，只顯示打數
+const avgText = (cell) => cell.thin ? '—' : esc(cell.avg || '—')
+
+// 球種顏色，設定檔沒有的球種退回灰色
+const pitchColor = (name) => (DATA.pitch_meta.colors || {})[name] || '#9AA7B5'
+
+// 球種中文名，沒有對照就用原文
+const pitchZh = (name) => (DATA.pitch_meta.zh || {})[name] || name
+
+// 球團中文名，沒有對照就用原文
+const teamZh = (name) => ((DATA.team_meta || {})[name] || {}).zh || name
+
+// 綜觀表：不分球團的左右投合計
+const renderOverview = (hand) => {
+  const cell = DATA.overview[hand] || { ab: 0, h: 0, hr: 0, so: 0, pitchers: 0, thin: true }
+  const rows = SUM_FIELDS.map(([key, label]) => `<tr><td>${label}</td><td>${cell[key]}</td></tr>`).join('')
+  el('overview').innerHTML = `<table><thead><tr><th>${HANDS[hand]}合計</th><th>數值</th></tr></thead>
+    <tbody>${rows}<tr><td>打率</td><td class="${cell.thin ? 'thin' : ''}">${avgText(cell)}</td></tr>
+    <tr><td>投手數</td><td>${cell.pitchers}</td></tr></tbody></table>`
+}
+
+// 球種表：該側的用球比例與應對成績
+const renderPitchTable = (hand) => {
+  const key = hand === 'L' ? '対左投手' : '対右投手'
+  const rows = (DATA.pitch[key] || []).map((row) => `<tr>
+    <td><i style="display:inline-block;width:11px;height:11px;margin-right:6px;background:${pitchColor(row.pitch)}"></i>${esc(pitchZh(row.pitch))}</td>
+    <td>${esc(row.share)}</td><td>${esc(row.speed)}</td><td>${esc(row.whiff)}</td>
+    <td>${esc(row.ops)}</td><td>${esc(row.avg)}</td><td>${esc(row.hr)}</td></tr>`).join('')
+  el('pitch-table').innerHTML = rows
+    ? `<table><thead><tr><th>球種</th><th>用球比例</th><th>平均球速</th><th>空揮率</th><th>OPS</th><th>打率</th><th>全壘打</th></tr></thead><tbody>${rows}</tbody></table>`
+    : '<p class="note">這一側沒有球種資料。</p>'
+}
+
+// 球團表：該側各球團的成績，薄樣本標灰且不顯示打率
+const renderTeamTable = (hand) => {
+  const rows = Object.keys(DATA.teams).map((team) => {
+    const cell = DATA.teams[team][hand]
+    if (!cell) return ''
+    const cls = cell.thin ? ' class="thin"' : ''
+    return `<tr${cls}><td>${esc(teamZh(team))}</td><td>${cell.pitchers}</td><td>${cell.ab}</td>
+      <td>${cell.h}</td><td>${avgText(cell)}</td><td>${cell.hr}</td><td>${cell.so}</td></tr>`
+  }).join('')
+  el('team-table').innerHTML = rows
+    ? `<table><thead><tr><th>球團</th><th>投手數</th><th>打數</th><th>安打</th><th>打率</th><th>全壘打</th><th>三振</th></tr></thead><tbody>${rows}</tbody></table>
+       <p class="note">打數低於 ${DATA.min_ab} 的格子不顯示打率，只顯示打數。</p>`
+    : '<p class="note">這一側沒有球團資料。</p>'
+}
+
+// 配球堆疊條：一列一個球數
+const renderMixRows = (rows) => rows.map((row) => {
+  const blocks = Object.keys(row.mix).map((pitch) =>
+    `<span style="width:${row.mix[pitch]}%;background:${pitchColor(pitch)}" title="${esc(pitchZh(pitch))}: ${row.mix[pitch]}%"></span>`).join('')
+  return `<div class="mixrow"><div class="cnt">${esc(row.count)}</div><div class="bar">${blocks}</div></div>`
+}).join('')
+
+// 配球區塊：每個球團一段
+const renderMix = (hand) => {
+  const key = hand === 'L' ? '対左投手' : '対右投手'
+  const parts = Object.keys(DATA.mix).map((team) => {
+    const rows = (DATA.mix[team] || {})[key]
+    if (!rows) return `<h3>${esc(teamZh(team))}</h3><p class="note">這一側沒有配球資料。</p>`
+    return `<h3>${esc(teamZh(team))}</h3>${renderMixRows(rows)}`
+  }).join('')
+  el('mix').innerHTML = parts || '<p class="note">沒有配球資料。</p>'
+}
+
+// 球種圖例
+const renderLegend = () => {
+  const items = (DATA.pitch_meta.order || []).map((pitch) =>
+    `<span><i style="background:${pitchColor(pitch)}"></i>${esc(pitchZh(pitch))}</span>`).join('')
+  el('mix').insertAdjacentHTML('beforebegin', `<div class="legend">${items}</div>`)
+}
+
+// 交叉驗證、稽核差異與未命中清單
+const renderChecks = () => {
+  const cross = Object.keys(DATA.cross).map((hand) => {
+    const row = DATA.cross[hand]
+    const cls = row.match ? 'ok' : 'bad'
+    const text = row.match ? '相符' : '不符'
+    const official = row.official_ab === null ? '—' : `${row.official_ab} 打數 ${row.official_h} 安打`
+    return `<tr><td>${HANDS[hand]}</td><td>${row.parsed_ab} 打數 ${row.parsed_h} 安打</td>
+      <td>${official}</td><td class="${cls}">${text}</td></tr>`
+  }).join('')
+  const audit = DATA.audit.map((row) => `<tr><td>${esc(teamZh(row.team))}</td><td>${esc(FIELD_ZH[row.field] || row.field)}</td>
+    <td>${row.parsed}</td><td>${row.official}</td><td class="bad">${row.diff}</td></tr>`).join('')
+  const unmatched = DATA.unmatched.map((row) =>
+    `<tr><td>${esc(teamZh(row.team))}</td><td>${esc(row.name)}</td><td>${row.ab}</td></tr>`).join('')
+  el('checks').innerHTML = `
+    <h3>交叉驗證</h3>
+    <table><thead><tr><th>側</th><th>本頁重建</th><th>原站官方</th><th>結果</th></tr></thead><tbody>${cross}</tbody></table>
+    <h3>一致性稽核</h3>
+    ${audit ? `<table><thead><tr><th>球團</th><th>欄位</th><th>逐投手加總</th><th>官方合計</th><th>差額</th></tr></thead><tbody>${audit}</tbody></table>`
+      : '<p class="note">逐投手加總與官方合計完全吻合。</p>'}
+    <h3>左右手未命中</h3>
+    ${unmatched ? `<table><thead><tr><th>球團</th><th>投手</th><th>打數</th></tr></thead><tbody>${unmatched}</tbody></table>`
+      : '<p class="note">全部投手都比對到左右手。</p>'}
+    <p class="note">未命中的投手一律留空，不猜測左右手。</p>`
+}
+
+// 頁尾已知缺口：固定印出來，日後單獨開檔時才記得這些前提
+const renderGaps = () => {
+  const gaps = []
+  DATA.audit.forEach((row) => {
+    if (row.diff > 0) gaps.push(`${teamZh(row.team)} 的逐投手表比官方合計少了 ${row.diff} 個${FIELD_ZH[row.field] || row.field}，原始存檔當下該區塊可能尚未載入完成。`)
+  })
+  DATA.unmatched.forEach((row) => {
+    gaps.push(`${teamZh(row.team)} ${row.name}（${row.ab} 打數）查不到左右手，已留空不猜。`)
+  })
+  DATA.errors.forEach((row) => { gaps.push(`${row.stage} ${row.msg}`) })
+  gaps.push('微觀層沒有 OPS 與上壘率：重算需要四壞球與二三壘打，來源表沒有這兩欄。')
+  gaps.push(`拆成球團 × 左右後每格樣本很小，打數低於 ${DATA.min_ab} 時不顯示打率。`)
+  el('gaps').innerHTML = gaps.map((text) => `<li>${esc(text)}</li>`).join('')
+}
+
+// 切換左右投時重繪四個區塊
+const showHand = (hand) => {
+  renderOverview(hand)
+  renderPitchTable(hand)
+  renderTeamTable(hand)
+  renderMix(hand)
+  Array.from(el('switch').querySelectorAll('button')).forEach((button) => {
+    button.setAttribute('aria-pressed', String(button.dataset.hand === hand))
+  })
+}
+
+// 啟動
+const start = () => {
+  el('title').textContent = `${DATA.player || '打者'} 配球對照表`
+  el('subtitle').textContent = `產出時間 ${DATA.generated_at}　資料來源 Short-Stop（配球與成績）與 NPB 官方名冊（投手左右手）`
+  el('switch-note').textContent = '左右投切換會同時改變綜觀、微觀與配球三個區塊。'
+  renderChecks()
+  renderGaps()
+  renderLegend()
+  showHand('R')
+  el('switch').addEventListener('click', (event) => {
+    const hand = event.target.dataset && event.target.dataset.hand
+    if (hand) showHand(hand)
+  })
+}
+
+start()
+</script>
+</body>
+</html>

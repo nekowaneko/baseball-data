@@ -32,3 +32,14 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
 - 各驗收項失敗次數：V02 0、V17 0
 - 備註：由既有 `tests/fixtures/hands_raw.txt` 轉出五份名冊快照 JSON 當 Stub 資料，
   未捏造任何一筆左右手；以 Stub 建出的對照表可完整還原黃金值。
+
+## T4 HTML 產出
+
+- 修正輪數：2
+- 錯誤指紋：
+  - `a1f0-render-placeholder`：`JSONDecodeError: Extra data`——範本佔位只換掉註解、未換掉後面的預設 `{}`，
+    產出 `const DATA = {...}{}` 的壞語法。修法：佔位字串改為 `/*__DATA__*/{}`，連同預設值一起取代。
+  - `b7c3-thin-threshold`：`assert False is True`——測試把薄樣本門檻寫成「10 打數以下」，
+    但規格是「低於 10 打數」。修法：更正測試斷言，不動實作（門檻值來自 HANDOFF.md）。
+- 各驗收項失敗次數：V15 1、內嵌 JSON 合法性 1，其餘 0
+- 追加修正：測試中 `'<\/'` 造成 DeprecationWarning，改為原始字串（不計入修正輪數，非驗收失敗）

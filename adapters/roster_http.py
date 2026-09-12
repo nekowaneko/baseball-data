@@ -1,11 +1,16 @@
 #真實 NPB 名冊取數，全專案只有這一支可以連網；驗收不會用到它
 import json
 import os
+import sys
 import time
 import urllib.request
 from datetime import date, datetime
 
 from bs4 import BeautifulSoup
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+if ROOT not in sys.path:  #讓這支可直接以腳本方式執行，不必先設 PYTHONPATH
+    sys.path.insert(0, ROOT)
 
 from adapters.roster import RosterSource
 
@@ -102,10 +107,9 @@ class HttpRosterSource(RosterSource):
 
 #手動執行：抓取 config/team_meta.json 裡指定的球團名冊並寫入 cache/
 def main():
-    root = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-    with open(os.path.join(root, 'config', 'team_meta.json'), encoding='utf-8') as f:
+    with open(os.path.join(ROOT, 'config', 'team_meta.json'), encoding='utf-8') as f:
         teams = json.load(f)
-    source = HttpRosterSource(cache_dir=os.path.join(root, 'cache'))
+    source = HttpRosterSource(cache_dir=os.path.join(ROOT, 'cache'))
     for team, meta in teams.items():
         players = source.fetch_team(meta['npb_code'])
         print(f"{team}（rst_{meta['npb_code']}）：{len(players)} 人")

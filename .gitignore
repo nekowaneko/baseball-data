@@ -8,10 +8,14 @@ venv/
 # OS
 .DS_Store
 
-# 專案特有：使用者上傳的 MHT 原始檔與 NPB 名冊快取不進版控
+# 使用者上傳的 MHT 原始檔（整個 uploads/ 不進版控，只保留目錄）
 uploads/*
 !uploads/.gitkeep
+uploads/**/*.mht
+uploads/**/*.mhtml
+
+# NPB 名冊快取
 cache/*
 !cache/.gitkeep
-*.mht
-*.mhtml
+
+# 注意：tests/fixtures/ 底下的 *.mht 是回歸測試樣本，必須進版控，故不設全域 *.mht 規則

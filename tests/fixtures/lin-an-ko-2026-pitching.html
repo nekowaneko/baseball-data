@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="zh-Hant">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>林安可 2026 配球對照表</title>
+<style>
+/* 西武主場配色：白底球衣 + レジェンドブルー（紺）
+   左右投分別用球團的兩代藍 — 現行紺與黃金期水色 */
+:root{
+  --paper:#FFFFFF;
+  --paper2:#EEF3F9;
+  --rule:#C7D4E4;
+  --ink:#0B2F62;
+  --muted:#5B6E85;
+  --navy:#0B2F62;
+  --sky:#0090D4;
+  --warn:#9B2C3B;
+}
+*{box-sizing:border-box}
+body{
+  margin:0; background:var(--paper); color:var(--ink);
+  font-family:"Hiragino Kaku Gothic ProN","Noto Sans TC","Yu Gothic",system-ui,sans-serif;
+  font-variant-numeric:tabular-nums;
+  line-height:1.6;
+}
+.wrap{max-width:960px;margin:0 auto;padding:28px clamp(10px,3vw,18px) 80px}
+
+/* 頁首 */
+.head{border-bottom:3px solid var(--navy);padding:0 0 16px;margin-bottom:26px}
+.head h1{font-size:1.75rem;margin:0 0 4px;font-weight:800;letter-spacing:.02em}
+.head .sub{color:var(--muted);font-size:.82rem;margin:0}
+
+/* 左右投切換：實體開關的感覺 */
+.switch{display:flex;border:2px solid var(--ink);margin:0 0 8px;overflow:hidden}
+.switch button{
+  flex:1;padding:14px 8px;border:0;background:var(--paper2);color:var(--muted);
+  font-size:1rem;font-weight:800;cursor:pointer;font-family:inherit;
+  border-right:1px solid var(--rule);transition:background .15s,color .15s;
+}
+.switch button:last-child{border-right:0}
+.switch button[aria-pressed="true"]{color:#fff}
+.switch button[data-hand="L"][aria-pressed="true"]{background:var(--sky)}
+.switch button[data-hand="R"][aria-pressed="true"]{background:var(--navy)}
+.switch button:focus-visible{outline:3px solid var(--ink);outline-offset:-6px}
+.switch-note{color:var(--muted);font-size:.78rem;margin:0 0 26px}
+
+/* 分層標題 */
+.layer{border-top:2px solid var(--navy);padding-top:14px;margin-top:40px}
+.layer:first-of-type{margin-top:0}
+.layer h2{font-size:1.24rem;margin:0 0 2px;font-weight:800}
+.layer .lead{color:var(--muted);font-size:.82rem;margin:0 0 20px}
+
+h3{font-size:1.02rem;margin:0 0 4px;font-weight:800}
+.note{color:var(--muted);font-size:.8rem;margin:0 0 14px}
+
+/* 問號註記 */
+.qm{
+  display:inline-flex;align-items:center;justify-content:center;
+  width:17px;height:17px;margin-left:5px;padding:0;vertical-align:1px;
+  border:1px solid var(--muted);border-radius:50%;background:none;
+  color:var(--muted);font-size:.7rem;font-weight:700;font-family:inherit;
+  cursor:pointer;line-height:1;
+}
+.qm:hover,.qm[aria-expanded="true"]{background:var(--ink);border-color:var(--ink);color:#fff}
+.qnote{
+  display:none;margin:0 0 14px;padding:10px 12px;
+  background:var(--paper2);border-left:3px solid var(--muted);
+  font-size:.8rem;color:var(--muted);
+}
+.qnote.open{display:block}
+.qnote strong{color:var(--ink)}
+
+/* 成績摘要條 */
+.totals{display:flex;flex-wrap:wrap;gap:0;border:1px solid var(--rule);background:var(--paper2);margin-bottom:30px}
+.totals div{flex:1 1 88px;padding:12px 10px;border-right:1px solid var(--rule);text-align:center}
+.totals div:last-child{border-right:0}
+.totals dt{font-size:.72rem;color:var(--muted);margin:0}
+.totals dd{margin:2px 0 0;font-size:1.32rem;font-weight:800}
+
+/* 球種列表 */
+.sortbar{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.sortbar button{
+  border:1px solid var(--rule);background:var(--paper2);color:var(--muted);
+  padding:6px 12px;font-size:.78rem;font-family:inherit;cursor:pointer;
+}
+.sortbar button[aria-pressed="true"]{border-color:var(--ink);color:var(--ink);font-weight:700}
+.plist{list-style:none;margin:0;padding:0}
+.prow{
+  display:grid;grid-template-columns:1fr;gap:4px;
+  padding:10px 8px;border-bottom:1px solid var(--rule);cursor:pointer;
+  background:none;border-left:0;border-right:0;border-top:0;width:100%;
+  font-family:inherit;text-align:left;color:inherit;
+}
+.prow:hover{background:var(--paper2)}
+.prow[aria-pressed="true"]{background:var(--paper2);box-shadow:inset 4px 0 0 var(--ink)}
+.prow .top{display:flex;align-items:baseline;gap:8px;flex-wrap:wrap}
+.prow .name{font-weight:800;font-size:clamp(.88rem,3.4vw,.98rem);white-space:nowrap}
+.prow .velo{color:var(--muted);font-size:.76rem;margin-left:auto;white-space:nowrap}
+.bar{height:12px;background:#DCE5F0;position:relative}
+.bar span{display:block;height:100%}
+.stats{display:flex;gap:14px;font-size:.8rem;color:var(--muted);flex-wrap:wrap}
+.stats b{color:var(--ink);font-weight:700}
+.stats .hot{color:var(--warn)}
+
+/* 微觀：球團選單與左右成績卡 */
+.picker{margin-bottom:16px}
+select{
+  font-family:inherit;font-size:.95rem;padding:9px 12px;
+  border:1px solid var(--ink);background:var(--paper2);color:var(--ink);width:100%;max-width:300px;
+}
+.cards{display:flex;gap:10px;margin-bottom:22px;flex-wrap:wrap}
+.card{
+  flex:1 1 160px;border:1px solid var(--rule);padding:12px;
+  background:var(--paper2);
+}
+.card.on[data-hand="R"]{border:2px solid var(--navy);background:#fff}
+.card.on[data-hand="L"]{border:2px solid var(--sky);background:#fff}
+.card h4{margin:0 0 8px;font-size:.86rem;font-weight:800}
+.card h4 .dot{display:inline-block;width:9px;height:9px;margin-right:6px}
+.card .big{font-size:1.6rem;font-weight:800;line-height:1.1}
+.card .sub{font-size:.76rem;color:var(--muted);margin-top:4px}
+.card .thin{color:var(--warn);font-weight:700}
+
+/* 球數配球圖 */
+.counts{margin:0 0 10px}
+.crow{display:flex;align-items:center;gap:8px;margin-bottom:6px}
+.clabel{width:40px;font-size:.8rem;font-weight:800;text-align:right;flex:none}
+.cbar{flex:1;display:flex;height:22px;border:1px solid var(--rule);background:#DCE5F0}
+.cbar .seg{display:block;height:100%;border:0;padding:0;cursor:pointer;font-size:0;transition:opacity .15s}
+.cbar .seg:focus-visible{outline:2px solid var(--ink);outline-offset:-2px;z-index:1}
+.cbar.dim .seg:not(.on){opacity:.18}
+.cbar.none{background:repeating-linear-gradient(45deg,#E4EBF4 0 5px,#D6E0EC 5px 10px)}
+.crow.blank .clabel{color:var(--muted);font-weight:400}
+.cbar em{font-style:normal;font-size:.72rem;color:var(--muted);align-self:center;padding-left:8px}
+.legend{display:flex;flex-wrap:wrap;gap:4px 12px;font-size:.76rem;color:var(--muted);margin-bottom:8px}
+.legend span{display:flex;align-items:center;gap:5px;white-space:nowrap;transition:opacity .15s}
+.legend.dim span:not(.on){opacity:.25}
+.legend span.on{color:var(--ink);font-weight:700}
+.legend i{width:11px;height:11px;display:block;font-style:normal;flex:none}
+.empty{color:var(--muted);font-size:.86rem;padding:16px 0}
+
+/* 頁尾資料說明 */
+.foot{margin-top:44px;border-top:1px solid var(--rule);padding-top:16px;color:var(--muted);font-size:.78rem}
+.foot h3{font-size:.86rem;color:var(--ink);margin-bottom:8px}
+.foot ul{margin:0;padding-left:1.1em}
+.foot li{margin-bottom:6px}
+@media (max-width:520px){.totals div{flex:1 1 33%}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <header class="head">
+    <h1>林安可 2026 配球對照表</h1>
+    <p class="sub">投手怎麼配他，他打得如何。資料到 9/6，來源 Short-Stop 與 NPB 官方名冊。</p>
+  </header>
+
+  <div class="switch" role="group" aria-label="切換左投或右投">
+    <button data-hand="L" aria-pressed="false">對左投手</button>
+    <button data-hand="R" aria-pressed="true">對右投手</button>
+  </div>
+  <p class="switch-note">整頁的成績與配球都會跟著切換。</p>
+
+  <section class="layer">
+    <h2>綜觀</h2>
+    <p class="lead">不分球團，看他整季面對這一側投手的樣子。</p>
+
+    <dl class="totals" id="totals"></dl>
+
+    <h3>各球種的用球比例與應對成績</h3>
+    <p class="note">長條是投球比例，下面是他面對這顆球的結果。點一列，下方配球圖只留下那一種球。</p>
+    <div class="sortbar" id="sortbar">
+      <button data-sort="usage" aria-pressed="true">用球比例</button>
+      <button data-sort="whiff" aria-pressed="false">空揮率</button>
+      <button data-sort="ops" aria-pressed="false">OPS</button>
+    </div>
+    <ul class="plist" id="plist"></ul>
+  </section>
+
+  <section class="layer">
+    <h2>微觀</h2>
+    <p class="lead">單一球團之下，這一側投手怎麼配他、他打成什麼樣。</p>
+
+    <div class="picker">
+      <select id="team" aria-label="選擇球團"></select>
+    </div>
+
+    <h3>對左右投的打擊成績<button class="qm" data-note="n-micro" aria-expanded="false" aria-label="這組數據的來源與限制">?</button></h3>
+    <div class="qnote" id="n-micro">
+      <strong>這組數字是自行加總出來的，不是原站提供的。</strong>
+      Short-Stop 只給整季的左右合計與球團合計，沒有兩者交叉。所以我把逐位投手的成績依 NPB 官方名冊的投球慣用手分組後加總。
+      打數、安打、全壘打、三振可以精確相加，<strong>OPS 與上壘率不行</strong> —— 重算需要四壞球與二三壘打，那些欄位原站沒有，所以這裡沒有 OPS。
+      驗證：所有球團的左投打數加總為 52 打數 8 安打，與原站「對左」欄位完全相符。
+    </div>
+    <div class="cards" id="cards"></div>
+
+    <h3>不同球數下的配球<button class="qm" data-note="n-counts" aria-expanded="false" aria-label="配球圖的讀法">?</button></h3>
+    <div class="qnote" id="n-counts">
+      球數為日式寫法「壞球-好球」，所以 3-0 是三壞零好。球種一律照固定順序由左排到右，直球最左。
+      點任一色塊會鎖定該球種，上方球種表同步高亮，再點一次解除。
+      這張圖只顯示投了什麼，<strong>不含打擊結果</strong> —— 結果請看上面那兩張卡。
+    </div>
+    <div class="legend" id="legend"></div>
+    <div class="counts" id="counts"></div>
+  </section>
+
+  <footer class="foot">
+    <h3>資料的已知缺口</h3>
+    <ul id="gaps"></ul>
+  </footer>
+</div>
+
+<script>
+const DATA = {"pitchVsL": [{"pitch": "ストレート", "usage": 38.0, "velo": 146.4, "whiff": 12.1, "ops": 0.428, "avg": 0.111, "hr": 1}, {"pitch": "スライダー", "usage": 32.6, "velo": 129.1, "whiff": 57.6, "ops": 0.358, "avg": 0.158, "hr": 0}, {"pitch": "カットボール", "usage": 14.7, "velo": 135.8, "whiff": 27.3, "ops": 0.4, "avg": 0.2, "hr": 0}, {"pitch": "フォーク", "usage": 6.0, "velo": 133.6, "whiff": 71.4, "ops": 0.0, "avg": 0.0, "hr": 0}, {"pitch": "カーブ", "usage": 4.9, "velo": 122.2, "whiff": 50.0, "ops": null, "avg": null, "hr": 0}, {"pitch": "チェンジアップ", "usage": 1.6, "velo": 121.0, "whiff": 0.0, "ops": 2.5, "avg": 0.5, "hr": 1}, {"pitch": "スローカーブ", "usage": 0.5, "velo": 90.0, "whiff": null, "ops": null, "avg": null, "hr": 0}, {"pitch": "ツーシーム", "usage": 0.5, "velo": 140.0, "whiff": null, "ops": null, "avg": null, "hr": 0}, {"pitch": "スプリット", "usage": 0.5, "velo": 134.0, "whiff": 0.0, "ops": null, "avg": null, "hr": 0}, {"pitch": "ナックルカーブ", "usage": 0.5, "velo": 113.0, "whiff": null, "ops": null, "avg": null, "hr": 0}], "pitchVsR": [{"pitch": "ストレート", "usage": 37.5, "velo": 149.3, "whiff": 20.6, "ops": 0.775, "avg": 0.255, "hr": 2}, {"pitch": "フォーク", "usage": 12.8, "velo": 137.6, "whiff": 48.6, "ops": 0.669, "avg": 0.25, "hr": 0}, {"pitch": "チェンジアップ", "usage": 10.8, "velo": 131.4, "whiff": 40.9, "ops": 0.445, "avg": 0.154, "hr": 0}, {"pitch": "スプリット", "usage": 7.4, "velo": 137.9, "whiff": 38.1, "ops": 0.333, "avg": 0.133, "hr": 0}, {"pitch": "カットボール", "usage": 7.4, "velo": 140.9, "whiff": 0.0, "ops": 0.685, "avg": 0.2, "hr": 0}, {"pitch": "ツーシーム", "usage": 7.1, "velo": 147.1, "whiff": 5.0, "ops": 1.3, "avg": 0.4, "hr": 1}, {"pitch": "スライダー", "usage": 6.9, "velo": 130.3, "whiff": 25.0, "ops": 0.929, "avg": 0.286, "hr": 0}, {"pitch": "カーブ", "usage": 5.1, "velo": 119.5, "whiff": 30.0, "ops": 1.267, "avg": 0.6, "hr": 0}, {"pitch": "ナックルカーブ", "usage": 1.7, "velo": 128.8, "whiff": 50.0, "ops": 0.5, "avg": 0.0, "hr": 0}, {"pitch": "シンカー", "usage": 1.2, "velo": 134.7, "whiff": 0.0, "ops": 2.0, "avg": 1.0, "hr": 0}, {"pitch": "ワンシーム", "usage": 0.8, "velo": 139.2, "whiff": 0.0, "ops": 0.0, "avg": 0.0, "hr": 0}, {"pitch": "シュート", "usage": 0.7, "velo": 147.3, "whiff": 0.0, "ops": 5.0, "avg": 1.0, "hr": 1}, {"pitch": "縦スライダー", "usage": 0.3, "velo": 130.0, "whiff": null, "ops": 1.0, "avg": null, "hr": 0}, {"pitch": "スイーパー", "usage": 0.2, "velo": 133.0, "whiff": 0.0, "ops": 0.0, "avg": 0.0, "hr": 0}], "velocity": [{"band": "161km/h～", "avg": "—", "hr": "—", "isop": "—", "usage": "—", "whiff": "—"}, {"band": "～160km/h", "avg": "—", "hr": "0", "isop": "—", "usage": "2.7%", "whiff": "0.0%"}, {"band": "～155km/h", "avg": ".353", "hr": "0", "isop": ".118", "usage": "25.7%", "whiff": "23.8%"}, {"band": "～150km/h", "avg": ".214", "hr": "2", "isop": ".214", "usage": "43.8%", "whiff": "14.3%"}, {"band": "～145km/h", "avg": ".125", "hr": "1", "isop": ".375", "usage": "18.2%", "whiff": "14.3%"}, {"band": "～140km/h", "avg": ".000", "hr": "0", "isop": ".000", "usage": "1.7%", "whiff": "0.0%"}, {"band": "球速不明", "avg": ".167", "hr": "0", "isop": ".111", "usage": "7.9%", "whiff": "27.8%"}], "splitTotals": [{"cond": "対右", "ops": ".797", "avg": ".261", "hr": "6", "obp": ".345", "k": "22.6%", "ab": "157", "h": "41"}, {"cond": "対左", "ops": ".451", "avg": ".154", "hr": "2", "obp": ".182", "k": "32.7%", "ab": "52", "h": "8"}, {"cond": "対不明", "ops": ".000", "avg": ".000", "hr": "0", "obp": ".000", "k": "0.0%", "ab": "1", "h": "0"}], "teamTotals": [{"team": "日本ハム", "ops": ".710", "avg": ".209", "hr": "3", "rbi": "5", "obp": ".244", "ab": "43", "h": "9"}, {"team": "楽天", "ops": "1.040", "avg": ".386", "hr": "2", "rbi": "12", "obp": ".449", "ab": "44", "h": "17"}, {"team": "西武", "ops": "—", "avg": "—", "hr": "—", "rbi": "—", "obp": "—", "ab": "—", "h": "—"}, {"team": "ロッテ", "ops": ".413", "avg": ".114", "hr": "1", "rbi": "2", "obp": ".184", "ab": "35", "h": "4"}, {"team": "オリックス", "ops": ".896", "avg": ".324", "hr": "0", "rbi": "4", "obp": ".425", "ab": "34", "h": "11"}, {"team": "ソフトバンク", "ops": ".526", "avg": ".154", "hr": "2", "rbi": "5", "obp": ".237", "ab": "52", "h": "8"}, {"team": "巨人", "ops": "—", "avg": "—", "hr": "—", "rbi": "—", "obp": "—", "ab": "—", "h": "—"}, {"team": "ヤクルト", "ops": ".000", "avg": ".000", "hr": "0", "rbi": "0", "obp": ".000", "ab": "2", "h": "0"}, {"team": "横浜", "ops": "—", "avg": "—", "hr": "—", "rbi": "—", "obp": "—", "ab": "—", "h": "—"}, {"team": "中日", "ops": "—", "avg": "—", "hr": "—", "rbi": "—", "obp": "—", "ab": "—", "h": "—"}, {"team": "阪神", "ops": "—", "avg": "—", "hr": "—", "rbi": "—", "obp": "—", "ab": "—", "h": "—"}, {"team": "広島", "ops": "—", "avg": "—", "hr": "—", "rbi": "—", "obp": "—", "ab": "—", "h": "—"}], "teams": {"ソフトバンク": {"合計": [{"count": "0-0", "mix": {"ストレート": 44.2, "チェンジアップ": 16.3, "スライダー": 14.0, "フォーク": 9.3, "スプリット": 4.7, "カットボール": 4.7, "ワンシーム": 2.3, "シュート": 2.3, "カーブ": 2.3}}, {"count": "1-0", "mix": {"ストレート": 50.0, "スライダー": 16.7, "フォーク": 16.7, "カーブ": 8.3, "チェンジアップ": 8.3}}, {"count": "2-0", "mix": {"カーブ": 20.0, "スライダー": 20.0, "ワンシーム": 20.0, "チェンジアップ": 20.0, "ストレート": 20.0}}, {"count": "3-0", "mix": {"スライダー": 50.0, "ワンシーム": 50.0}}, {"count": "0-1", "mix": {"ストレート": 44.0, "スライダー": 20.0, "フォーク": 12.0, "チェンジアップ": 8.0, "カットボール": 4.0, "ワンシーム": 4.0, "カーブ": 4.0, "シュート": 4.0}}, {"count": "1-1", "mix": {"スライダー": 23.5, "ストレート": 17.6, "チェンジアップ": 17.6, "スプリット": 11.8, "フォーク": 11.8, "カットボール": 11.8, "ワンシーム": 5.9}}, {"count": "2-1", "mix": {"ストレート": 50.0, "カットボール": 33.3, "スライダー": 16.7}}, {"count": "3-1", "mix": {"チェンジアップ": 50.0, "ストレート": 50.0}}, {"count": "0-2", "mix": {"ストレート": 71.4, "フォーク": 14.3, "チェンジアップ": 7.1, "スプリット": 7.1}}, {"count": "1-2", "mix": {"ストレート": 47.1, "フォーク": 23.5, "スライダー": 11.8, "スプリット": 5.9, "カットボール": 5.9, "チェンジアップ": 5.9}}, {"count": "2-2", "mix": {"フォーク": 30.8, "ストレート": 30.8, "スライダー": 7.7, "スプリット": 7.7, "カットボール": 7.7, "カーブ": 7.7, "チェンジアップ": 7.7}}, {"count": "3-2", "mix": {"フォーク": 42.9, "カットボール": 28.6, "スライダー": 14.3, "ストレート": 14.3}}], "対右投手": [{"count": "0-0", "mix": {"ストレート": 43.2, "チェンジアップ": 18.9, "フォーク": 10.8, "スライダー": 10.8, "スプリット": 5.4, "カットボール": 5.4, "ワンシーム": 2.7, "シュート": 2.7}}, {"count": "1-0", "mix": {"ストレート": 50.0, "フォーク": 20.0, "カーブ": 10.0, "チェンジアップ": 10.0, "スライダー": 10.0}}, {"count": "2-0", "mix": {"カーブ": 20.0, "スライダー": 20.0, "ワンシーム": 20.0, "チェンジアップ": 20.0, "ストレート": 20.0}}, {"count": "3-0", "mix": {"スライダー": 50.0, "ワンシーム": 50.0}}, {"count": "0-1", "mix": {"ストレート": 42.9, "スライダー": 19.0, "チェンジアップ": 9.5, "フォーク": 9.5, "カットボール": 4.8, "ワンシーム": 4.8, "カーブ": 4.8, "シュート": 4.8}}, {"count": "1-1", "mix": {"チェンジアップ": 21.4, "ストレート": 14.3, "スライダー": 14.3, "スプリット": 14.3, "フォーク": 14.3, "カットボール": 14.3, "ワンシーム": 7.1}}, {"count": "2-1", "mix": {"ストレート": 50.0, "カットボール": 25.0, "スライダー": 25.0}}, {"count": "3-1", "mix": {"チェンジアップ": 50.0, "ストレート": 50.0}}, {"count": "0-2", "mix": {"ストレート": 72.7, "チェンジアップ": 9.1, "スプリット": 9.1, "フォーク": 9.1}}, {"count": "1-2", "mix": {"ストレート": 46.7, "フォーク": 26.7, "スプリット": 6.7, "スライダー": 6.7, "カットボール": 6.7, "チェンジアップ": 6.7}}, {"count": "2-2", "mix": {"フォーク": 27.3, "ストレート": 27.3, "スライダー": 9.1, "スプリット": 9.1, "カットボール": 9.1, "カーブ": 9.1, "チェンジアップ": 9.1}}, {"count": "3-2", "mix": {"フォーク": 50.0, "カットボール": 33.3, "ストレート": 16.7}}], "対左投手": [{"count": "0-0", "mix": {"ストレート": 50.0, "スライダー": 33.3, "カーブ": 16.7}}, {"count": "1-0", "mix": {"スライダー": 50.0, "ストレート": 50.0}}, {"count": "0-1", "mix": {"ストレート": 50.0, "スライダー": 25.0, "フォーク": 25.0}}, {"count": "1-1", "mix": {"スライダー": 66.7, "ストレート": 33.3}}, {"count": "2-1", "mix": {"カットボール": 50.0, "ストレート": 50.0}}, {"count": "0-2", "mix": {"ストレート": 66.7, "フォーク": 33.3}}, {"count": "1-2", "mix": {"ストレート": 50.0, "スライダー": 50.0}}, {"count": "2-2", "mix": {"ストレート": 50.0, "フォーク": 50.0}}, {"count": "3-2", "mix": {"スライダー": 100.0}}]}, "オリックス": {"合計": [{"count": "0-0", "mix": {"ストレート": 30.0, "カットボール": 15.0, "チェンジアップ": 10.0, "ツーシーム": 10.0, "ナックルカーブ": 10.0, "スライダー": 7.5, "カーブ": 5.0, "スプリット": 5.0, "フォーク": 5.0, "スローカーブ": 2.5}}, {"count": "1-0", "mix": {"ストレート": 38.9, "ツーシーム": 22.2, "スプリット": 11.1, "スライダー": 5.6, "チェンジアップ": 5.6, "シンカー": 5.6, "カットボール": 5.6, "カーブ": 5.6}}, {"count": "2-0", "mix": {"ストレート": 50.0, "ツーシーム": 16.7, "縦スライダー": 8.3, "シンカー": 8.3, "スライダー": 8.3, "スプリット": 8.3}}, {"count": "3-0", "mix": {"ストレート": 50.0, "縦スライダー": 25.0, "ツーシーム": 25.0}}, {"count": "0-1", "mix": {"ストレート": 27.8, "ツーシーム": 27.8, "スライダー": 16.7, "カットボール": 5.6, "ナックルカーブ": 5.6, "フォーク": 5.6, "シンカー": 5.6, "チェンジアップ": 5.6}}, {"count": "1-1", "mix": {"ストレート": 35.7, "ツーシーム": 14.3, "チェンジアップ": 14.3, "ナックルカーブ": 14.3, "スプリット": 7.1, "カーブ": 7.1, "カットボール": 7.1}}, {"count": "2-1", "mix": {"ツーシーム": 41.7, "ストレート": 41.7, "カットボール": 16.7}}, {"count": "3-1", "mix": {"ツーシーム": 33.3, "ストレート": 33.3, "カットボール": 33.3}}, {"count": "0-2", "mix": {"ストレート": 27.3, "チェンジアップ": 18.2, "カットボール": 18.2, "ナックルカーブ": 9.1, "スライダー": 9.1, "フォーク": 9.1, "ツーシーム": 9.1}}, {"count": "1-2", "mix": {"ストレート": 30.0, "チェンジアップ": 30.0, "スプリット": 20.0, "スライダー": 10.0, "フォーク": 10.0}}, {"count": "2-2", "mix": {"ストレート": 40.0, "チェンジアップ": 20.0, "フォーク": 20.0, "スライダー": 10.0, "ナックルカーブ": 10.0}}, {"count": "3-2", "mix": {"ツーシーム": 33.3, "スライダー": 33.3, "スプリット": 16.7, "ストレート": 16.7}}], "対右投手": [{"count": "0-0", "mix": {"ストレート": 32.4, "カットボール": 14.7, "チェンジアップ": 11.8, "ツーシーム": 11.8, "ナックルカーブ": 11.8, "カーブ": 5.9, "スプリット": 5.9, "フォーク": 5.9}}, {"count": "1-0", "mix": {"ストレート": 38.9, "ツーシーム": 22.2, "スプリット": 11.1, "スライダー": 5.6, "チェンジアップ": 5.6, "シンカー": 5.6, "カットボール": 5.6, "カーブ": 5.6}}, {"count": "2-0", "mix": {"ストレート": 50.0, "ツーシーム": 16.7, "縦スライダー": 8.3, "シンカー": 8.3, "スライダー": 8.3, "スプリット": 8.3}}, {"count": "3-0", "mix": {"ストレート": 50.0, "縦スライダー": 25.0, "ツーシーム": 25.0}}, {"count": "0-1", "mix": {"ツーシーム": 38.5, "ストレート": 30.8, "ナックルカーブ": 7.7, "フォーク": 7.7, "シンカー": 7.7, "チェンジアップ": 7.7}}, {"count": "1-1", "mix": {"ストレート": 25.0, "ツーシーム": 16.7, "チェンジアップ": 16.7, "ナックルカーブ": 16.7, "スプリット": 8.3, "カーブ": 8.3, "カットボール": 8.3}}, {"count": "2-1", "mix": {"ツーシーム": 41.7, "ストレート": 41.7, "カットボール": 16.7}}, {"count": "3-1", "mix": {"ツーシーム": 33.3, "ストレート": 33.3, "カットボール": 33.3}}, {"count": "0-2", "mix": {"ストレート": 42.9, "チェンジアップ": 28.6, "ナックルカーブ": 14.3, "ツーシーム": 14.3}}, {"count": "1-2", "mix": {"チェンジアップ": 42.9, "スプリット": 28.6, "ストレート": 14.3, "フォーク": 14.3}}, {"count": "2-2", "mix": {"ストレート": 37.5, "チェンジアップ": 25.0, "フォーク": 25.0, "ナックルカーブ": 12.5}}, {"count": "3-2", "mix": {"ツーシーム": 40.0, "スプリット": 20.0, "ストレート": 20.0, "スライダー": 20.0}}], "対左投手": [{"count": "0-0", "mix": {"スライダー": 50.0, "ストレート": 16.7, "スローカーブ": 16.7, "カットボール": 16.7}}, {"count": "0-1", "mix": {"スライダー": 60.0, "ストレート": 20.0, "カットボール": 20.0}}, {"count": "1-1", "mix": {"ストレート": 100.0}}, {"count": "0-2", "mix": {"カットボール": 50.0, "スライダー": 25.0, "フォーク": 25.0}}, {"count": "1-2", "mix": {"ストレート": 66.7, "スライダー": 33.3}}, {"count": "2-2", "mix": {"スライダー": 50.0, "ストレート": 50.0}}, {"count": "3-2", "mix": {"スライダー": 100.0}}]}, "楽天": {"合計": [{"count": "0-0", "mix": {"ストレート": 35.7, "カーブ": 11.9, "スライダー": 11.9, "カットボール": 9.5, "フォーク": 9.5, "ツーシーム": 9.5, "スプリット": 7.1, "チェンジアップ": 4.8}}, {"count": "1-0", "mix": {"ストレート": 26.7, "スライダー": 20.0, "スプリット": 13.3, "チェンジアップ": 13.3, "シンカー": 6.7, "ツーシーム": 6.7, "カットボール": 6.7, "カーブ": 6.7}}, {"count": "2-0", "mix": {"ストレート": 42.9, "スライダー": 14.3, "ツーシーム": 14.3, "チェンジアップ": 14.3, "カットボール": 14.3}}, {"count": "3-0", "mix": {"スライダー": 100.0}}, {"count": "0-1", "mix": {"ストレート": 30.0, "カーブ": 20.0, "スプリット": 15.0, "スライダー": 15.0, "カットボール": 5.0, "フォーク": 5.0, "ツーシーム": 5.0, "チェンジアップ": 5.0}}, {"count": "1-1", "mix": {"ストレート": 31.3, "チェンジアップ": 12.5, "スライダー": 12.5, "シュート": 12.5, "ツーシーム": 12.5, "カーブ": 6.3, "スプリット": 6.3, "カットボール": 6.3}}, {"count": "2-1", "mix": {"ストレート": 33.3, "スライダー": 25.0, "スプリット": 16.7, "ツーシーム": 8.3, "チェンジアップ": 8.3, "カットボール": 8.3}}, {"count": "3-1", "mix": {"ストレート": 66.7, "カーブ": 33.3}}, {"count": "0-2", "mix": {"ストレート": 57.1, "フォーク": 28.6, "スライダー": 14.3}}, {"count": "1-2", "mix": {"ストレート": 50.0, "フォーク": 16.7, "スプリット": 8.3, "スライダー": 8.3, "ツーシーム": 8.3, "チェンジアップ": 8.3}}, {"count": "2-2", "mix": {"ストレート": 26.7, "スライダー": 20.0, "スプリット": 13.3, "チェンジアップ": 13.3, "カットボール": 6.7, "シンカー": 6.7, "カーブ": 6.7, "フォーク": 6.7}}, {"count": "3-2", "mix": {"ストレート": 36.4, "スプリット": 18.2, "カーブ": 9.1, "シンカー": 9.1, "フォーク": 9.1, "ツーシーム": 9.1, "チェンジアップ": 9.1}}], "対右投手": [{"count": "0-0", "mix": {"ストレート": 31.3, "カーブ": 12.5, "フォーク": 12.5, "ツーシーム": 12.5, "スプリット": 9.4, "スライダー": 9.4, "カットボール": 6.3, "チェンジアップ": 6.3}}, {"count": "1-0", "mix": {"ストレート": 27.3, "スプリット": 18.2, "チェンジアップ": 18.2, "シンカー": 9.1, "スライダー": 9.1, "ツーシーム": 9.1, "カーブ": 9.1}}, {"count": "2-0", "mix": {"ストレート": 50.0, "スライダー": 16.7, "ツーシーム": 16.7, "チェンジアップ": 16.7}}, {"count": "3-0", "mix": {"スライダー": 100.0}}, {"count": "0-1", "mix": {"ストレート": 25.0, "スプリット": 18.8, "カーブ": 18.8, "スライダー": 12.5, "カットボール": 6.3, "フォーク": 6.3, "ツーシーム": 6.3, "チェンジアップ": 6.3}}, {"count": "1-1", "mix": {"ストレート": 16.7, "チェンジアップ": 16.7, "スライダー": 16.7, "シュート": 16.7, "ツーシーム": 16.7, "カーブ": 8.3, "スプリット": 8.3}}, {"count": "2-1", "mix": {"ストレート": 33.3, "スライダー": 22.2, "スプリット": 22.2, "ツーシーム": 11.1, "チェンジアップ": 11.1}}, {"count": "3-1", "mix": {"ストレート": 66.7, "カーブ": 33.3}}, {"count": "0-2", "mix": {"ストレート": 66.7, "フォーク": 33.3}}, {"count": "1-2", "mix": {"ストレート": 50.0, "フォーク": 20.0, "スプリット": 10.0, "ツーシーム": 10.0, "チェンジアップ": 10.0}}, {"count": "2-2", "mix": {"ストレート": 25.0, "スプリット": 16.7, "チェンジアップ": 16.7, "カットボール": 8.3, "シンカー": 8.3, "カーブ": 8.3, "フォーク": 8.3, "スライダー": 8.3}}, {"count": "3-2", "mix": {"ストレート": 36.4, "スプリット": 18.2, "カーブ": 9.1, "シンカー": 9.1, "フォーク": 9.1, "ツーシーム": 9.1, "チェンジアップ": 9.1}}], "対左投手": [{"count": "0-0", "mix": {"ストレート": 50.0, "カットボール": 20.0, "スライダー": 20.0, "カーブ": 10.0}}, {"count": "1-0", "mix": {"スライダー": 50.0, "カットボール": 25.0, "ストレート": 25.0}}, {"count": "2-0", "mix": {"カットボール": 100.0}}, {"count": "0-1", "mix": {"ストレート": 50.0, "カーブ": 25.0, "スライダー": 25.0}}, {"count": "1-1", "mix": {"ストレート": 75.0, "カットボール": 25.0}}, {"count": "2-1", "mix": {"スライダー": 33.3, "カットボール": 33.3, "ストレート": 33.3}}, {"count": "0-2", "mix": {"スライダー": 100.0}}, {"count": "1-2", "mix": {"ストレート": 50.0, "スライダー": 50.0}}, {"count": "2-2", "mix": {"スライダー": 66.7, "ストレート": 33.3}}]}, "日本ハム": {"合計": [{"count": "0-0", "mix": {"ストレート": 40.5, "カットボール": 18.9, "フォーク": 10.8, "スプリット": 8.1, "チェンジアップ": 8.1, "カーブ": 5.4, "スライダー": 5.4, "スイーパー": 2.7}}, {"count": "1-0", "mix": {"ストレート": 25.0, "カットボール": 25.0, "フォーク": 18.8, "スライダー": 12.5, "ツーシーム": 6.3, "チェンジアップ": 6.3, "カーブ": 6.3}}, {"count": "2-0", "mix": {"カットボール": 66.7, "チェンジアップ": 33.3}}, {"count": "3-0", "mix": {"ストレート": 100.0}}, {"count": "0-1", "mix": {"ストレート": 41.2, "スライダー": 23.5, "カーブ": 11.8, "チェンジアップ": 11.8, "カットボール": 5.9, "フォーク": 5.9}}, {"count": "1-1", "mix": {"フォーク": 35.3, "カットボール": 23.5, "カーブ": 17.6, "ストレート": 11.8, "ツーシーム": 5.9, "スライダー": 5.9}}, {"count": "2-1", "mix": {"カットボール": 25.0, "ストレート": 25.0, "フォーク": 25.0, "ツーシーム": 12.5, "スライダー": 12.5}}, {"count": "3-1", "mix": {"カットボール": 100.0}}, {"count": "0-2", "mix": {"ストレート": 50.0, "スライダー": 25.0, "フォーク": 25.0}}, {"count": "1-2", "mix": {"フォーク": 38.9, "ストレート": 38.9, "スプリット": 22.2}}, {"count": "2-2", "mix": {"ストレート": 40.0, "フォーク": 20.0, "カットボール": 10.0, "チェンジアップ": 10.0, "スライダー": 10.0, "スプリット": 10.0}}, {"count": "3-2", "mix": {"カットボール": 60.0, "フォーク": 20.0, "ストレート": 20.0}}], "対右投手": [{"count": "0-0", "mix": {"ストレート": 46.2, "フォーク": 11.5, "スプリット": 11.5, "カーブ": 7.7, "チェンジアップ": 7.7, "カットボール": 7.7, "スイーパー": 3.8, "スライダー": 3.8}}, {"count": "1-0", "mix": {"カットボール": 30.8, "フォーク": 23.1, "ストレート": 23.1, "スライダー": 7.7, "ツーシーム": 7.7, "カーブ": 7.7}}, {"count": "2-0", "mix": {"カットボール": 66.7, "チェンジアップ": 33.3}}, {"count": "3-0", "mix": {"ストレート": 100.0}}, {"count": "0-1", "mix": {"ストレート": 54.5, "カーブ": 18.2, "チェンジアップ": 18.2, "カットボール": 9.1}}, {"count": "1-1", "mix": {"フォーク": 46.2, "カットボール": 23.1, "カーブ": 23.1, "ストレート": 7.7}}, {"count": "2-1", "mix": {"フォーク": 40.0, "ストレート": 20.0, "ツーシーム": 20.0, "スライダー": 20.0}}, {"count": "3-1", "mix": {"カットボール": 100.0}}, {"count": "0-2", "mix": {"ストレート": 100.0}}, {"count": "1-2", "mix": {"フォーク": 46.7, "ストレート": 33.3, "スプリット": 20.0}}, {"count": "2-2", "mix": {"ストレート": 50.0, "スプリット": 25.0, "フォーク": 25.0}}, {"count": "3-2", "mix": {"カットボール": 50.0, "フォーク": 25.0, "ストレート": 25.0}}], "対左投手": [{"count": "0-0", "mix": {"カットボール": 45.5, "ストレート": 27.3, "スライダー": 9.1, "フォーク": 9.1, "チェンジアップ": 9.1}}, {"count": "1-0", "mix": {"ストレート": 33.3, "スライダー": 33.3, "チェンジアップ": 33.3}}, {"count": "0-1", "mix": {"スライダー": 66.7, "フォーク": 16.7, "ストレート": 16.7}}, {"count": "1-1", "mix": {"ツーシーム": 25.0, "カットボール": 25.0, "スライダー": 25.0, "ストレート": 25.0}}, {"count": "2-1", "mix": {"カットボール": 66.7, "ストレート": 33.3}}, {"count": "0-2", "mix": {"スライダー": 50.0, "フォーク": 50.0}}, {"count": "1-2", "mix": {"ストレート": 66.7, "スプリット": 33.3}}, {"count": "2-2", "mix": {"ストレート": 33.3, "カットボール": 16.7, "フォーク": 16.7, "チェンジアップ": 16.7, "スライダー": 16.7}}, {"count": "3-2", "mix": {"カットボール": 100.0}}]}, "ロッテ": {"合計": [{"count": "0-0", "mix": {"ストレート": 66.7, "チェンジアップ": 14.8, "スライダー": 11.1, "カーブ": 7.4}}, {"count": "1-0", "mix": {"チェンジアップ": 27.3, "ストレート": 27.3, "カットボール": 27.3, "フォーク": 18.2}}, {"count": "2-0", "mix": {"カットボール": 66.7, "ストレート": 33.3}}, {"count": "3-0", "mix": {"ストレート": 100.0}}, {"count": "0-1", "mix": {"ストレート": 40.0, "フォーク": 20.0, "スライダー": 13.3, "カーブ": 6.7, "チェンジアップ": 6.7, "スプリット": 6.7, "ナックルカーブ": 6.7}}, {"count": "1-1", "mix": {"ストレート": 62.5, "フォーク": 12.5, "カーブ": 12.5, "シンカー": 12.5}}, {"count": "2-1", "mix": {"ストレート": 66.7, "チェンジアップ": 16.7, "カットボール": 16.7}}, {"count": "3-1", "mix": {"ストレート": 66.7, "チェンジアップ": 33.3}}, {"count": "0-2", "mix": {"ストレート": 33.3, "スプリット": 22.2, "フォーク": 11.1, "カーブ": 11.1, "スライダー": 11.1, "ナックルカーブ": 11.1}}, {"count": "1-2", "mix": {"ストレート": 50.0, "カットボール": 16.7, "スプリット": 16.7, "スライダー": 16.7}}, {"count": "2-2", "mix": {"ストレート": 20.0, "フォーク": 20.0, "スプリット": 20.0, "チェンジアップ": 20.0, "スライダー": 20.0}}, {"count": "3-2", "mix": {"カットボール": 100.0}}], "対右投手": [{"count": "0-0", "mix": {"ストレート": 72.2, "チェンジアップ": 22.2, "スライダー": 5.6}}, {"count": "1-0", "mix": {"チェンジアップ": 42.9, "フォーク": 28.6, "カットボール": 14.3, "ストレート": 14.3}}, {"count": "2-0", "mix": {"ストレート": 50.0, "カットボール": 50.0}}, {"count": "3-0", "mix": {"ストレート": 100.0}}, {"count": "0-1", "mix": {"ストレート": 50.0, "フォーク": 20.0, "カーブ": 10.0, "チェンジアップ": 10.0, "スプリット": 10.0}}, {"count": "1-1", "mix": {"ストレート": 60.0, "フォーク": 20.0, "シンカー": 20.0}}, {"count": "2-1", "mix": {"ストレート": 50.0, "チェンジアップ": 25.0, "カットボール": 25.0}}, {"count": "3-1", "mix": {"ストレート": 66.7, "チェンジアップ": 33.3}}, {"count": "0-2", "mix": {"ストレート": 42.9, "スプリット": 28.6, "カーブ": 14.3, "ナックルカーブ": 14.3}}, {"count": "1-2", "mix": {"ストレート": 66.7, "スプリット": 33.3}}, {"count": "2-2", "mix": {"ストレート": 25.0, "フォーク": 25.0, "スプリット": 25.0, "チェンジアップ": 25.0}}, {"count": "3-2", "mix": {"カットボール": 100.0}}], "対左投手": [{"count": "0-0", "mix": {"ストレート": 55.6, "スライダー": 22.2, "カーブ": 22.2}}, {"count": "1-0", "mix": {"ストレート": 50.0, "カットボール": 50.0}}, {"count": "2-0", "mix": {"カットボール": 100.0}}, {"count": "0-1", "mix": {"スライダー": 40.0, "フォーク": 20.0, "ストレート": 20.0, "ナックルカーブ": 20.0}}, {"count": "1-1", "mix": {"ストレート": 66.7, "カーブ": 33.3}}, {"count": "2-1", "mix": {"ストレート": 100.0}}, {"count": "0-2", "mix": {"フォーク": 50.0, "スライダー": 50.0}}, {"count": "1-2", "mix": {"ストレート": 33.3, "カットボール": 33.3, "スライダー": 33.3}}, {"count": "2-2", "mix": {"スライダー": 100.0}}]}, "ヤクルト": {"合計": [{"count": "0-0", "mix": {"フォーク": 100.0}}, {"count": "1-0", "mix": {"フォーク": 100.0}}, {"count": "2-0", "mix": {"フォーク": 100.0}}, {"count": "0-1", "mix": {"ストレート": 100.0}}, {"count": "1-1", "mix": {"チェンジアップ": 100.0}}, {"count": "2-1", "mix": {"ストレート": 50.0, "スライダー": 50.0}}, {"count": "2-2", "mix": {"ストレート": 33.3, "フォーク": 33.3, "チェンジアップ": 33.3}}], "対右投手": [{"count": "0-0", "mix": {"フォーク": 100.0}}, {"count": "1-0", "mix": {"フォーク": 100.0}}, {"count": "2-0", "mix": {"フォーク": 100.0}}, {"count": "0-1", "mix": {"ストレート": 100.0}}, {"count": "1-1", "mix": {"チェンジアップ": 100.0}}, {"count": "2-1", "mix": {"ストレート": 50.0, "スライダー": 50.0}}, {"count": "2-2", "mix": {"ストレート": 33.3, "フォーク": 33.3, "チェンジアップ": 33.3}}]}}, "splits": {"楽天": {"R": {"ab": 34, "h": 16, "hr": 2, "so": 6, "pitchers": 13, "fallback": 0}, "L": {"ab": 10, "h": 1, "hr": 0, "so": 3, "pitchers": 4, "fallback": 0}}, "日本ハム": {"R": {"ab": 31, "h": 6, "hr": 2, "so": 8, "pitchers": 10, "fallback": 0}, "L": {"ab": 12, "h": 3, "hr": 1, "so": 3, "pitchers": 6, "fallback": 0}}, "オリックス": {"R": {"ab": 28, "h": 9, "hr": 0, "so": 9, "pitchers": 13, "fallback": 0}, "L": {"ab": 6, "h": 2, "hr": 0, "so": 3, "pitchers": 3, "fallback": 0}}, "ロッテ": {"L": {"ab": 17, "h": 2, "hr": 1, "so": 5, "pitchers": 7, "fallback": 0}, "R": {"ab": 17, "h": 2, "hr": 0, "so": 3, "pitchers": 8, "fallback": 0}}, "ソフトバンク": {"R": {"ab": 29, "h": 5, "hr": 1, "so": 8, "pitchers": 12, "fallback": 0}, "L": {"ab": 7, "h": 0, "hr": 0, "so": 4, "pitchers": 3, "fallback": 0}}, "DeNA": {"R": {"ab": 0, "h": 0, "hr": 0, "so": 0, "pitchers": 1, "fallback": 1}}, "阪神": {"R": {"ab": 2, "h": 0, "hr": 0, "so": 1, "pitchers": 2, "fallback": 2}}}, "unmatched": [{"team": "DeNA", "name": "東 克樹", "ab": 2}, {"team": "DeNA", "name": "中川 颯", "ab": 0}, {"team": "ヤクルト", "name": "小川 泰弘", "ab": 1}, {"team": "ヤクルト", "name": "星 知弥", "ab": 1}]}
+
+// 球種分色：速球系用球團的紺→水色，其餘家族改配金、青綠、暗紅
+const PITCH_COLORS = {
+  'ストレート':'#0B2F62', 'ツーシーム':'#1B5391', 'ワンシーム':'#2E7CBF', 'シュート':'#66A9DA',
+  'スライダー':'#A8781A', 'カットボール':'#D2A03A', 'スイーパー':'#E8C578', '縦スライダー':'#7A560E',
+  'カーブ':'#146B63', 'ナックルカーブ':'#279B8E', 'スローカーブ':'#7BC4BA',
+  'フォーク':'#8C2233', 'スプリット':'#B84354', 'チェンジアップ':'#D67C88', 'シンカー':'#EBB0B7'
+}
+
+// 球種固定排序：速球系 → 橫向變化 → 縱向曲球 → 下墜球
+const PITCH_ORDER = [
+  'ストレート', 'ツーシーム', 'ワンシーム', 'シュート',
+  'スライダー', 'カットボール', 'スイーパー', '縦スライダー',
+  'カーブ', 'ナックルカーブ', 'スローカーブ',
+  'フォーク', 'スプリット', 'チェンジアップ', 'シンカー'
+]
+
+// 十二種球數，沒有紀錄的也要留位置，不然階梯會斷掉
+const COUNT_ORDER = ['0-0', '1-0', '2-0', '3-0', '0-1', '1-1', '2-1', '3-1', '0-2', '1-2', '2-2', '3-2']
+
+// 打率要顯示所需的最低打數，低於此值只給原始數字
+const MIN_AB = 10
+
+// 球團中日對照
+const TEAM_ZH = {
+  'ソフトバンク':'軟銀', 'オリックス':'歐力士', '楽天':'樂天',
+  '日本ハム':'日本火腿', 'ロッテ':'羅德', 'ヤクルト':'養樂多',
+  '西武':'西武', 'DeNA':'DeNA', '阪神':'阪神', '巨人':'巨人', '中日':'中日', '広島':'廣島'
+}
+const teamLabel = (t) => TEAM_ZH[t] ? `${TEAM_ZH[t]}　${t}` : t
+
+// 球種中文對照，方便閱讀
+const PITCH_ZH = {
+  'ストレート':'直球', 'ツーシーム':'二縫線', 'ワンシーム':'單縫線', 'シュート':'內飄球',
+  'スライダー':'滑球', 'カットボール':'卡特球', 'スイーパー':'橫掃滑球', '縦スライダー':'縱向滑球',
+  'カーブ':'曲球', 'ナックルカーブ':'彈指曲球', 'スローカーブ':'慢速曲球',
+  'フォーク':'指叉球', 'スプリット':'快速指叉', 'チェンジアップ':'變速球', 'シンカー':'伸卡球'
+}
+
+const colorOf = (pitch) => PITCH_COLORS[pitch] || '#7C8BA0'
+const labelOf = (pitch) => PITCH_ZH[pitch] ? `${PITCH_ZH[pitch]}　${pitch}` : pitch
+const fmt = (v, d = 3) => v === null || v === undefined ? '—' : v.toFixed(d).replace(/^0/, '')
+const handZH = (h) => h === 'L' ? '左投' : '右投'
+
+const state = { hand: 'R', sort: 'usage', pitch: null, team: null }
+
+const currentPitches = () => state.hand === 'L' ? DATA.pitchVsL : DATA.pitchVsR
+const currentTotals = () => DATA.splitTotals.find(r => r.cond === (state.hand === 'L' ? '対左' : '対右'))
+
+// 綜觀：整季成績摘要
+const renderTotals = () => {
+  const t = currentTotals()
+  const cells = [
+    ['打率', t.avg], ['OPS', t.ops], ['上壘率', t.obp],
+    ['全壘打', t.hr], ['三振率', t.k], ['打數', t.ab]
+  ]
+  document.getElementById('totals').innerHTML = cells
+    .map(([k, v]) => `<div><dt>${k}</dt><dd>${v}</dd></div>`).join('')
+}
+
+// 綜觀：球種列表
+const renderPitchList = () => {
+  const rows = [...currentPitches()].sort((a, b) => {
+    const av = a[state.sort], bv = b[state.sort]
+    if (av === null) return 1
+    if (bv === null) return -1
+    return bv - av
+  })
+  const max = Math.max(...rows.map(r => r.usage))
+
+  document.getElementById('plist').innerHTML = rows.map(r => {
+    const hot = r.whiff !== null && r.whiff >= 40 ? 'hot' : ''
+    return `<li><button class="prow" aria-pressed="${state.pitch === r.pitch}" data-pitch="${r.pitch}">
+      <span class="top">
+        <span class="name">${labelOf(r.pitch)}</span>
+        <span class="velo">${r.velo ? r.velo.toFixed(1) + ' km/h' : ''}</span>
+      </span>
+      <span class="bar"><span style="width:${(r.usage / max * 100).toFixed(1)}%;background:${colorOf(r.pitch)}"></span></span>
+      <span class="stats">
+        <span>比例 <b>${r.usage.toFixed(1)}%</b></span>
+        <span>空揮 <b class="${hot}">${r.whiff === null ? '—' : r.whiff.toFixed(1) + '%'}</b></span>
+        <span>打率 <b>${fmt(r.avg)}</b></span>
+        <span>OPS <b>${fmt(r.ops)}</b></span>
+        <span>全壘打 <b>${r.hr}</b></span>
+      </span>
+    </button></li>`
+  }).join('')
+}
+
+// 微觀：該球團對左右投的打擊成績卡
+const renderCards = () => {
+  const s = (DATA.splits[state.team] || {})
+  document.getElementById('cards').innerHTML = ['R', 'L'].map(hand => {
+    const d = s[hand]
+    const on = hand === state.hand ? ' on' : ''
+    const dot = hand === 'L' ? 'var(--sky)' : 'var(--navy)'
+    if (!d || d.ab === 0) {
+      // 分辨兩種空狀態：真的沒打數，還是投手左右手沒查到而未納入
+      const un = DATA.unmatched.filter(u => u.team === state.team && u.ab > 0)
+      const reason = un.length
+        ? `${un.length} 位投手的左右手未確認，${un.reduce((a, b) => a + b.ab, 0)} 個打數未納入`
+        : '沒有打數紀錄'
+      return `<div class="card${on}" data-hand="${hand}">
+        <h4><span class="dot" style="background:${dot}"></span>對${handZH(hand)}</h4>
+        <div class="big">—</div>
+        <div class="sub">${reason}</div>
+      </div>`
+    }
+    const thin = d.ab < MIN_AB
+    const avg = thin ? '—' : fmt(d.h / d.ab)
+    const kr = (d.so / d.ab * 100).toFixed(1)
+    return `<div class="card${on}" data-hand="${hand}">
+      <h4><span class="dot" style="background:${dot}"></span>對${handZH(hand)}</h4>
+      <div class="big">${avg}</div>
+      <div class="sub">
+        ${d.ab} 打數 ${d.h} 安打・${d.hr} 轟・三振率 ${kr}%<br>
+        面對 ${d.pitchers} 位投手
+        ${thin ? '<br><span class="thin">打數不足 ' + MIN_AB + '，不顯示打率</span>' : ''}
+      </div>
+    </div>`
+  }).join('')
+}
+
+const teamRows = () => {
+  const t = DATA.teams[state.team]
+  if (!t) return null
+  return t[state.hand === 'L' ? '対左投手' : '対右投手'] || null
+}
+
+// 微觀：球數配球圖
+const renderCounts = () => {
+  const rows = teamRows()
+  const box = document.getElementById('counts')
+  const legend = document.getElementById('legend')
+
+  if (!rows) {
+    legend.className = 'legend'
+    legend.innerHTML = ''
+    box.innerHTML = `<p class="empty">${teamLabel(state.team)} 沒有對${handZH(state.hand)}的配球紀錄。</p>`
+    return
+  }
+
+  const seen = new Set()
+  rows.forEach(r => Object.keys(r.mix).forEach(k => seen.add(k)))
+  const order = PITCH_ORDER.filter(p => seen.has(p))
+  const byCount = Object.fromEntries(rows.map(r => [r.count, r.mix]))
+  const dim = state.pitch ? ' dim' : ''
+
+  legend.className = 'legend' + dim
+  legend.innerHTML = order.map(p =>
+    `<span class="${p === state.pitch ? 'on' : ''}"><i style="background:${colorOf(p)}"></i>${labelOf(p)}</span>`).join('')
+
+  box.innerHTML = COUNT_ORDER.map(cnt => {
+    const mix = byCount[cnt]
+    if (!mix) {
+      return `<div class="crow blank"><span class="clabel">${cnt}</span>` +
+        `<span class="cbar none"><em>沒有走到這個球數</em></span></div>`
+    }
+    const segs = PITCH_ORDER.filter(p => mix[p] !== undefined).map(p =>
+      `<button class="seg${p === state.pitch ? ' on' : ''}" data-pitch="${p}" data-count="${cnt}"` +
+      ` style="width:${mix[p]}%;background:${colorOf(p)}"` +
+      ` title="${labelOf(p)}：${mix[p].toFixed(1)}%"` +
+      ` aria-label="${cnt} 的${labelOf(p)} ${mix[p].toFixed(1)}%"></button>`).join('')
+    return `<div class="crow"><span class="clabel">${cnt}</span><span class="cbar${dim}">${segs}</span></div>`
+  }).join('')
+}
+
+// 頁尾：把已知缺口寫死在畫面上，不要藏在對話裡
+const renderGaps = () => {
+  const un = DATA.unmatched.filter(u => u.ab > 0)
+  const unAB = un.reduce((a, b) => a + b.ab, 0)
+  const items = [
+    `<strong>軟銀資料不完整。</strong>原站的投手別對戰表只加總到 36 打數，但球團別欄位是 52 打數 8 安打，缺了 16 打數 3 安打 1 轟。軟銀的微觀成績因此偏低，配球圖不受影響。`,
+    `<strong>未命中 ${DATA.unmatched.length} 位投手，共 ${unAB} 個打數未納入。</strong>` +
+      `分別是 ${DATA.unmatched.map(u => u.name.replace(/\s/g, '')).join('、')}。` +
+      `這幾位屬於交流戰的央聯球隊，我沒有取得其名冊，寧可留空也不用猜的方式填補。`,
+    `<strong>球團歸屬以 NPB 名冊為準。</strong>原站把藤原大翔、大竹風雅列在阪神、尾形崇斗列在 DeNA，但官方名冊顯示前兩位是軟銀選手、尾形於 5/13 由軟銀轉隊。左右手判定已用跨隊比對修正。`,
+    `<strong>樣本本來就薄。</strong>拆成球團 × 左右之後，每格只剩 6 到 34 個打數，幾支安打就能讓打率跳動數十點。打數低於 ${MIN_AB} 時不顯示打率，但即使超過門檻也請把打數一起看。`
+  ]
+  document.getElementById('gaps').innerHTML = items.map(t => `<li>${t}</li>`).join('')
+}
+
+const renderAll = () => { renderTotals(); renderPitchList(); renderCards(); renderCounts() }
+
+// 選取球種：綜觀與微觀共用同一個狀態
+const selectPitch = (pitch) => {
+  state.pitch = state.pitch === pitch ? null : pitch
+  renderPitchList()
+  renderCounts()
+}
+
+document.querySelectorAll('.switch button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    state.hand = btn.dataset.hand
+    state.pitch = null
+    document.querySelectorAll('.switch button').forEach(b =>
+      b.setAttribute('aria-pressed', String(b === btn)))
+    renderAll()
+  })
+})
+
+document.getElementById('sortbar').addEventListener('click', (e) => {
+  const btn = e.target.closest('button')
+  if (!btn) return
+  state.sort = btn.dataset.sort
+  document.querySelectorAll('#sortbar button').forEach(b =>
+    b.setAttribute('aria-pressed', String(b === btn)))
+  renderPitchList()
+})
+
+document.getElementById('plist').addEventListener('click', (e) => {
+  const btn = e.target.closest('.prow')
+  if (btn) selectPitch(btn.dataset.pitch)
+})
+
+document.getElementById('counts').addEventListener('click', (e) => {
+  const seg = e.target.closest('.seg')
+  if (!seg) return
+  const { pitch, count } = seg.dataset
+  selectPitch(pitch)
+  const again = document.querySelector(`.seg[data-pitch="${pitch}"][data-count="${count}"]`)
+  if (again) again.focus({ preventScroll: true })
+})
+
+// 問號註記開合
+document.querySelectorAll('.qm').forEach(btn => {
+  btn.addEventListener('click', () => {
+    const note = document.getElementById(btn.dataset.note)
+    const open = btn.getAttribute('aria-expanded') === 'true'
+    btn.setAttribute('aria-expanded', String(!open))
+    note.classList.toggle('open', !open)
+  })
+})
+
+const teamSelect = document.getElementById('team')
+teamSelect.innerHTML = Object.keys(DATA.teams).map(t => `<option value="${t}">${teamLabel(t)}</option>`).join('')
+state.team = Object.keys(DATA.teams)[0]
+teamSelect.addEventListener('change', () => {
+  state.team = teamSelect.value
+  renderCards()
+  renderCounts()
+})
+
+renderAll()
+renderGaps()
+</script>
+</body>
+</html>

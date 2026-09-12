@@ -1,0 +1,68 @@
+{
+ "team": "ロッテ",
+ "npb_code": "m",
+ "source": "tests/fixtures/hands_raw.txt",
+ "fetched_at": "2026-09-08",
+ "players": [
+  {
+   "name": "ロング",
+   "hand": "L"
+  },
+  {
+   "name": "益田 直也",
+   "hand": "R"
+  },
+  {
+   "name": "坂本 光士郎",
+   "hand": "L"
+  },
+  {
+   "name": "田中 晴也",
+   "hand": "R"
+  },
+  {
+   "name": "ジャクソン",
+   "hand": "R"
+  },
+  {
+   "name": "小島 和哉",
+   "hand": "L"
+  },
+  {
+   "name": "横山 陸人",
+   "hand": "R"
+  },
+  {
+   "name": "宮﨑 颯",
+   "hand": "L"
+  },
+  {
+   "name": "高野 脩汰",
+   "hand": "L"
+  },
+  {
+   "name": "中森 俊介",
+   "hand": "R"
+  },
+  {
+   "name": "八木 彬",
+   "hand": "R"
+  },
+  {
+   "name": "毛利 海大",
+   "hand": "L"
+  },
+  {
+   "name": "鈴木 昭汰",
+   "hand": "L"
+  },
+  {
+   "name": "廣池 康志郎",
+   "hand": "R"
+  },
+  {
+   "name": "澤田 圭佑",
+   "hand": "R"
+  }
+ ]
+}

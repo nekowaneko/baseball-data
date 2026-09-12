@@ -1,0 +1,72 @@
+{
+ "team": "日本ハム",
+ "npb_code": "f",
+ "source": "tests/fixtures/hands_raw.txt",
+ "fetched_at": "2026-09-08",
+ "players": [
+  {
+   "name": "福島 蓮",
+   "hand": "R"
+  },
+  {
+   "name": "宮西 尚生",
+   "hand": "L"
+  },
+  {
+   "name": "山﨑 福也",
+   "hand": "L"
+  },
+  {
+   "name": "北山 亘基",
+   "hand": "R"
+  },
+  {
+   "name": "伊藤 大海",
+   "hand": "R"
+  },
+  {
+   "name": "達 孝太",
+   "hand": "R"
+  },
+  {
+   "name": "加藤 貴之",
+   "hand": "L"
+  },
+  {
+   "name": "金村 尚真",
+   "hand": "R"
+  },
+  {
+   "name": "細野 晴希",
+   "hand": "L"
+  },
+  {
+   "name": "上原 健太",
+   "hand": "L"
+  },
+  {
+   "name": "生田目 翼",
+   "hand": "R"
+  },
+  {
+   "name": "大川 慈英",
+   "hand": "R"
+  },
+  {
+   "name": "田中 正義",
+   "hand": "R"
+  },
+  {
+   "name": "堀 瑞輝",
+   "hand": "L"
+  },
+  {
+   "name": "柳川 大晟",
+   "hand": "R"
+  },
+  {
+   "name": "有原 航平",
+   "hand": "R"
+  }
+ ]
+}

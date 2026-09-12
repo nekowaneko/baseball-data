@@ -1,0 +1,80 @@
+{
+ "team": "ソフトバンク",
+ "npb_code": "h",
+ "source": "tests/fixtures/hands_raw.txt",
+ "fetched_at": "2026-09-08",
+ "players": [
+  {
+   "name": "松本 裕樹",
+   "hand": "R"
+  },
+  {
+   "name": "上茶谷 大河",
+   "hand": "R"
+  },
+  {
+   "name": "徐 若熙",
+   "hand": "R"
+  },
+  {
+   "name": "鈴木 豪太",
+   "hand": "R"
+  },
+  {
+   "name": "大津 亮介",
+   "hand": "R"
+  },
+  {
+   "name": "松本 晴",
+   "hand": "L"
+  },
+  {
+   "name": "オスナ",
+   "hand": "R"
+  },
+  {
+   "name": "伊藤 優輔",
+   "hand": "R"
+  },
+  {
+   "name": "上沢 直之",
+   "hand": "R"
+  },
+  {
+   "name": "杉山 一樹",
+   "hand": "R"
+  },
+  {
+   "name": "前田 悠伍",
+   "hand": "L"
+  },
+  {
+   "name": "木村 光",
+   "hand": "R"
+  },
+  {
+   "name": "スチュワート・ジュニア",
+   "hand": "R"
+  },
+  {
+   "name": "ヘルナンデス",
+   "hand": "L"
+  },
+  {
+   "name": "津森 宥紀",
+   "hand": "R"
+  },
+  {
+   "name": "尾形 崇斗",
+   "hand": "R"
+  },
+  {
+   "name": "藤原 大翔",
+   "hand": "R"
+  },
+  {
+   "name": "大竹 風雅",
+   "hand": "R"
+  }
+ ]
+}

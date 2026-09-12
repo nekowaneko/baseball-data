@@ -1,0 +1,72 @@
+{
+ "team": "オリックス",
+ "npb_code": "b",
+ "source": "tests/fixtures/hands_raw.txt",
+ "fetched_at": "2026-09-08",
+ "players": [
+  {
+   "name": "ペルドモ",
+   "hand": "R"
+  },
+  {
+   "name": "横山 楓",
+   "hand": "R"
+  },
+  {
+   "name": "宮國 凌空",
+   "hand": "R"
+  },
+  {
+   "name": "寺西 成騎",
+   "hand": "R"
+  },
+  {
+   "name": "曽谷 龍平",
+   "hand": "L"
+  },
+  {
+   "name": "山﨑 颯一郎",
+   "hand": "R"
+  },
+  {
+   "name": "ジェリー",
+   "hand": "R"
+  },
+  {
+   "name": "宮城 大弥",
+   "hand": "L"
+  },
+  {
+   "name": "エスピノーザ",
+   "hand": "R"
+  },
+  {
+   "name": "髙島 泰都",
+   "hand": "R"
+  },
+  {
+   "name": "マチャド",
+   "hand": "R"
+  },
+  {
+   "name": "山田 修義",
+   "hand": "L"
+  },
+  {
+   "name": "椋木 蓮",
+   "hand": "R"
+  },
+  {
+   "name": "吉田 輝星",
+   "hand": "R"
+  },
+  {
+   "name": "山岡 泰輔",
+   "hand": "R"
+  },
+  {
+   "name": "入山 海斗",
+   "hand": "R"
+  }
+ ]
+}

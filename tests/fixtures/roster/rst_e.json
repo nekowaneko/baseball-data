@@ -1,0 +1,76 @@
+{
+ "team": "楽天",
+ "npb_code": "e",
+ "source": "tests/fixtures/hands_raw.txt",
+ "fetched_at": "2026-09-08",
+ "players": [
+  {
+   "name": "藤平 尚真",
+   "hand": "R"
+  },
+  {
+   "name": "西口 直人",
+   "hand": "R"
+  },
+  {
+   "name": "中込 陽翔",
+   "hand": "R"
+  },
+  {
+   "name": "津留﨑 大成",
+   "hand": "R"
+  },
+  {
+   "name": "瀧中 瞭太",
+   "hand": "R"
+  },
+  {
+   "name": "西垣 雅矢",
+   "hand": "R"
+  },
+  {
+   "name": "ウレーニャ",
+   "hand": "R"
+  },
+  {
+   "name": "藤原 聡大",
+   "hand": "R"
+  },
+  {
+   "name": "藤井 聖",
+   "hand": "L"
+  },
+  {
+   "name": "荘司 康誠",
+   "hand": "R"
+  },
+  {
+   "name": "岸 孝之",
+   "hand": "R"
+  },
+  {
+   "name": "九谷 瑠",
+   "hand": "R"
+  },
+  {
+   "name": "早川 隆久",
+   "hand": "L"
+  },
+  {
+   "name": "泰 勝利",
+   "hand": "L"
+  },
+  {
+   "name": "田中 千晴",
+   "hand": "R"
+  },
+  {
+   "name": "内 星龍",
+   "hand": "R"
+  },
+  {
+   "name": "鈴木 翔天",
+   "hand": "L"
+  }
+ ]
+}

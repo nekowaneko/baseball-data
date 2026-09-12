@@ -24,3 +24,11 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
 - 各驗收項失敗次數：V06–V08、V11–V13 各 0
 - 備註：`aggregate_splits` 的輸出與既有黃金產出 `tests/fixtures/splits.json` 完全相同，
   對左合計 52 打數 8 安打，跨隊回退命中 3 人（阪神 2、DeNA 1）。
+
+## T3 名冊取數介面與 Stub
+
+- 修正輪數：0（首次執行即全綠）
+- 錯誤指紋：無
+- 各驗收項失敗次數：V02 0、V17 0
+- 備註：由既有 `tests/fixtures/hands_raw.txt` 轉出五份名冊快照 JSON 當 Stub 資料，
+  未捏造任何一筆左右手；以 Stub 建出的對照表可完整還原黃金值。

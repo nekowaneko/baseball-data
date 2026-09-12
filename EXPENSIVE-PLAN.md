@@ -103,7 +103,7 @@ const withTrace = (stageName, fn) => async (input) => {
 ## 3. 目錄結構
 
 ```
-pitch-mix-workbench/
+baseball-data/
 ├── core/
 │   ├── mht.py            #MHT 拆封與分頁分類
 │   ├── parse_pitch.py    #球種 × 左右投表格解析
@@ -121,7 +121,7 @@ pitch-mix-workbench/
 │   ├── index.html        #窗口頁面
 │   └── app.js            #前端：上傳、進度條、log 面板
 ├── tests/
-├── fixtures/             #MHT 樣本與 NPB 名冊快照
+|    └── fixtures/        #MHT 樣本與 NPB 名冊快照
 ├── cache/                #名冊快取，帶抓取日期
 ├── out/                  #產出的 HTML
 └── verify.sh

@@ -8,11 +8,14 @@
 
 ## 啟動方式
 
-程式邏輯（`core/`、`adapters/`、`web/`）由 [EXPENSIVE-PLAN.md](EXPENSIVE-PLAN.md) 批次實作，目前僅有目錄骨架。實作完成後：
+程式邏輯（`core/`、`adapters/`、`web/`）已由 [EXPENSIVE-PLAN.md](EXPENSIVE-PLAN.md) 批次實作完成，驗收結果見 [ACCEPTANCE.md](ACCEPTANCE.md)。
 
 ```bash
-python -m web.server   # 啟動本機窗口，預設埠見 config/settings.example.json
-./verify.sh            # 執行分層驗收（L1 靜態檢查／L2 單元測試／L3 端到端）
+python -m web.server            # 啟動本機窗口，預設埠見 config/settings.example.json
+./verify.sh                     # 分層驗收：只跑 L1 靜態檢查與 L2 單元測試
+./verify.sh all                 # 三層全跑，含端到端與 core/ 覆蓋率門檻
+python tools/run_fixtures.py    # 不開瀏覽器，直接以測試樣本跑完整條管線
+python adapters/roster_http.py  # 手動抓取真實 NPB 名冊到 cache/（唯一會連網的程式）
 ```
 
 啟動後於瀏覽器開啟窗口頁面，上傳 5 份 MHT，即可看到進度條與 log 面板，完成後於 `out/` 取得成品 HTML。

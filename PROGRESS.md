@@ -16,3 +16,11 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
 - 錯誤指紋：無
 - 各驗收項失敗次數：V01–V05 各 0、V09 0、V10 0
 - 備註：`core/parse_vs.py` 的解析結果與既有黃金產出 `tests/fixtures/vs_pitchers.json` 完全相同。
+
+## T2 稽核、姓名比對與聚合
+
+- 修正輪數：0（首次執行即全綠）
+- 錯誤指紋：無
+- 各驗收項失敗次數：V06–V08、V11–V13 各 0
+- 備註：`aggregate_splits` 的輸出與既有黃金產出 `tests/fixtures/splits.json` 完全相同，
+  對左合計 52 打數 8 安打，跨隊回退命中 3 人（阪神 2、DeNA 1）。

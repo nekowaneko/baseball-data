@@ -15,7 +15,8 @@ if ROOT not in sys.path:  #讓這支可直接以腳本方式執行，不必先�
 from adapters.roster import RosterSource
 
 BASE_URL = 'https://npb.jp/bis/teams/rst_{code}.html'
-USER_AGENT = 'baseball-data/1.0 (個人用途，單次少量請求)'
+#HTTP 標頭只能是 latin-1，這行不可以寫中文，否則送出前就會拋編碼錯誤
+USER_AGENT = 'baseball-data/1.0 (personal use; low volume)'
 DEFAULT_TTL_DAYS = 7  #名冊會因轉隊與育成升支配下而變動，過期就重抓
 HAND_LABELS = {'右': 'R', '左': 'L'}  #名冊「投」欄只有右／左兩種寫法
 
@@ -25,7 +26,8 @@ def fetch_html(code, timeout=20):
     request = urllib.request.Request(BASE_URL.format(code=code),
                                      headers={'User-Agent': USER_AGENT})
     with urllib.request.urlopen(request, timeout=timeout) as response:
-        return response.read().decode('utf-8', 'replace')
+        charset = response.headers.get_content_charset() or 'utf-8'  #以回應宣告的編碼為準
+        return response.read().decode(charset, 'replace')
 
 
 #解析名冊表格，取姓名與「投」欄；欄位缺失就跳過該列，不猜

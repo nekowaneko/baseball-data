@@ -19,6 +19,10 @@ BASE_URL = 'https://npb.jp/bis/teams/rst_{code}.html'
 USER_AGENT = 'baseball-data/1.0 (personal use; low volume)'
 DEFAULT_TTL_DAYS = 7  #名冊會因轉隊與育成升支配下而變動，過期就重抓
 HAND_LABELS = {'右': 'R', '左': 'L'}  #名冊「投」欄只有右／左兩種寫法
+HEADER_MARK = 'No.'          #分段標題列的第一欄固定是 No.
+NAME_AT = 1                  #姓名固定在第二欄，該欄的標題文字即守備位置
+HAND_COLUMN = '投'           #投球慣用手欄
+PITCHER_SECTIONS = ('投手',)  #只收投手，野手的投球慣用手對本專案無用且會汙染姓名回退
 
 
 #下載單一球團名冊 HTML
@@ -30,27 +34,30 @@ def fetch_html(code, timeout=20):
         return response.read().decode(charset, 'replace')
 
 
-#解析名冊表格，取姓名與「投」欄；欄位缺失就跳過該列，不猜
-def parse_roster(html_text):
+#解析名冊表格：NPB 是一張大表中間插入分段標題列，標題列的姓名欄就是守備位置名
+#（監督／投手／捕手／内野手／外野手），且支配下與育成各一張表，兩張都要收
+def parse_roster(html_text, sections=PITCHER_SECTIONS):
     soup = BeautifulSoup(html_text, 'lxml')
     players = []
     for table in soup.find_all('table'):
-        rows = table.find_all('tr')
-        if not rows:
-            continue
-        head = [c.get_text(strip=True) for c in rows[0].find_all(['th', 'td'])]
-        if '投' not in head or '選手名' not in head:
-            continue
-        name_at = head.index('選手名')
-        hand_at = head.index('投')
-        for row in rows[1:]:
+        section = None
+        hand_at = None
+        for row in table.find_all('tr'):
             cells = [c.get_text(strip=True) for c in row.find_all(['th', 'td'])]
-            if len(cells) <= max(name_at, hand_at):
+            if not cells:
+                continue
+            if cells[0] == HEADER_MARK:  #遇到分段標題列，換段並重抓「投」欄位置
+                section = cells[NAME_AT] if len(cells) > NAME_AT else None
+                hand_at = cells.index(HAND_COLUMN) if HAND_COLUMN in cells else None
+                continue
+            if section not in sections or hand_at is None:
+                continue
+            if len(cells) <= max(NAME_AT, hand_at):
                 continue
             hand = HAND_LABELS.get(cells[hand_at])
-            if not hand:
+            if not hand:  #「投」欄沒寫就跳過該列，不猜
                 continue
-            players.append({'name': cells[name_at], 'hand': hand})
+            players.append({'name': cells[NAME_AT], 'hand': hand})
     return players
 
 

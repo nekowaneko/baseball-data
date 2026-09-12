@@ -76,3 +76,16 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
 - 錯誤指紋：無
 - `./verify.sh all` 一次通過：L1 五項、L2 79 個測試、L3 端到端 5 個測試與覆蓋率 96.55%
 - 產出 `ACCEPTANCE.md`、`out/report.html`、`out/run.ndjson`、`out/preview-report.md`
+
+## 交付後修正（不屬於 T1–T6）
+
+使用者手動執行 `adapters/roster_http.py` 時連續失敗三次，全部集中在唯一沒有測試覆蓋的連網模組：
+
+| # | 症狀 | 根因 | 修法 |
+|---|---|---|---|
+| 1 | `ModuleNotFoundError: No module named 'adapters'` | 以腳本方式執行時 `sys.path` 只含 `adapters/` | 匯入前把專案根目錄加進 `sys.path` |
+| 2 | `'latin-1' codec can't encode characters` | `USER_AGENT` 寫了中文，HTTP 標頭只能是 latin-1 | 改為純 ASCII，並依回應宣告的 charset 解碼 |
+| 3 | 12 隊全部解析出 0 人 | 假設表頭是「選手名」，實際 NPB 是一張大表中間插入分段標題列，姓名欄的標題即守備位置 | 改為逐列辨識標題列、只收「投手」分段；抓真實頁面存為 fixture 並補六項測試 |
+
+三者都是「驗收全程不連網」造成的盲區：`roster_http.py` 先前完全沒有測試。現已有 `tests/test_roster_http.py`
+以真實頁面快照離線驗證，解析結果與既有 82 筆左右手對照表在樂天這一隊完全一致（17/17 相符）。

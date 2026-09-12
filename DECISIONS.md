@@ -87,4 +87,7 @@ CHEAP-PLAN.md 要求的骨架目錄中，`tests/` 底下沒有 `.gitkeep`，但 
 - Short-Stop 的「横浜」與 `config/team_meta.json` 的 `DeNA` 鍵值不一致，建議在 `team_meta.json` 補一個別名欄位，
   讓稽核能把兩者對起來。
 - 軟銀缺 16 打數的根因是存檔當下區塊未載入完成，建議在窗口頁面提示使用者「稽核差異偏大時請重新存檔該分頁」。
-- `adapters/roster_http.py` 的名冊解析尚未以真實頁面驗證過（驗收全程不連網），請在手動執行後確認筆數合理。
+- ~~`adapters/roster_http.py` 的名冊解析尚未以真實頁面驗證過~~ 已於交付後補正：使用者手動執行時連續踩到兩個
+  只有真實連線才會浮現的錯誤（User-Agent 含中文導致標頭無法以 latin-1 編碼、名冊表格結構與假設不符）。
+  已抓一頁真實名冊存為 `tests/fixtures/npb/rst_e.html`，補上 `tests/test_roster_http.py` 六項離線測試。
+  教訓：「唯一會連網的模組完全沒有測試」這個缺口，靠分層驗收全綠是看不出來的。

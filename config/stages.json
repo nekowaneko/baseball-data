@@ -1,0 +1,12 @@
+{
+  "stages": [
+    { "id": "S1", "name": "接收與分類檔案", "fatal": false },
+    { "id": "S2", "name": "解析各分頁", "fatal": false },
+    { "id": "S3", "name": "一致性稽核", "fatal": false },
+    { "id": "S4", "name": "取得投手左右手", "fatal": false },
+    { "id": "S5", "name": "姓名比對", "fatal": false },
+    { "id": "S6", "name": "聚合統計", "fatal": false },
+    { "id": "S7", "name": "交叉驗證", "fatal": false },
+    { "id": "S8", "name": "產出 HTML", "fatal": true }
+  ]
+}

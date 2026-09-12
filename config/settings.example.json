@@ -1,0 +1,10 @@
+{
+  "upload_dir": "uploads/",
+  "cache_dir": "cache/",
+  "output_dir": "out/",
+  "npb_roster_base_url": "https://npb.jp/bis/teams/rst_{code}.html",
+  "cache_ttl_days": 1,
+  "min_ab_for_avg": 10,
+  "max_upload_size_mb": 20,
+  "server_port": 8787
+}

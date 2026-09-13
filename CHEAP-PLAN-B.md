@@ -30,6 +30,17 @@
 `docs/app.js`、`docs/sw.js`、`tools/build_web.py` **不在本批次**，屬於 EXPENSIVE-PLAN-B.md。
 本批次只負責 `index.html` 的骨架與樣式，讓貴批次寫 JS 時有固定的 DOM 可以接。
 
+### 1.1 `docs/` 已經存在，裡面有東西
+
+`docs/DATA-SCHEMA.md` 與 `docs/KNOWN-GAPS.md` 是既有的專案文件，`README.md` 有連到它們。
+**兩份都必須原地保留，不得移動、改名或刪除。** 本批次是在既有的 `docs/` 底下**新增**
+網站檔案，不是重建這個目錄。
+
+副作用是這兩份 `.md` 會一起被 GitHub Pages 當靜態檔服務（例如
+`https://<帳號>.github.io/<倉庫名>/DATA-SCHEMA.md`）。倉庫本來就是公開的，
+內容也不含本機資訊，**判定為可接受，不處理**。
+`docs/README.md` 必須寫明這件事，讓之後的人知道這個目錄同時裝了兩種東西。
+
 ## 2. 產出檔案清單（交接契約）
 
 本批次完成後，以下檔案必須存在且非空。EXPENSIVE-PLAN-B.md 的 T0 會檢查這份清單：
@@ -118,9 +129,13 @@ payload 目錄未來可能出現這類檔名，先關掉比較保險。
 
 ### 3.5 `docs/README.md`
 
-最多 400 字。必須說明：`docs/` 是 GitHub Pages 的發佈來源；
-`docs/payload/` 由 `tools/build_web.py` 產生，**不要手動編輯**；
-修改管線邏輯後必須重跑打包腳本，否則網站吃的還是舊的。
+最多 400 字。必須說明四件事：
+
+1. `docs/` 是 GitHub Pages 的發佈來源（Source 設為 `main` 分支的 `/docs`）
+2. `docs/payload/` 由 `tools/build_web.py` 產生，**不要手動編輯**
+3. 修改管線邏輯後必須重跑打包腳本，否則網站吃的還是舊的
+4. `DATA-SCHEMA.md` 與 `KNOWN-GAPS.md` 是專案文件不是網站內容，
+   只是剛好放在同一個目錄，會被一併服務，這是預期行為
 
 ### 3.6 `DEPLOY.md`
 
@@ -175,6 +190,8 @@ payload 目錄未來可能出現這類檔名，先關掉比較保險。
 | CB09 | `README.md` 既有的「用手機開」一節仍存在 | grep |
 | CB10 | 無 `[[待填` 殘留在應為實質內容的檔案（`index.html`、`style.css`、`DEPLOY.md`） | grep |
 | CB11 | `docs/` 下沒有任何 `.py` 檔（本批次不碰程式） | find |
+| CB13 | `docs/DATA-SCHEMA.md` 與 `docs/KNOWN-GAPS.md` 仍存在且內容未被更動 | 比對 git diff 為空 |
+| CB14 | `docs/README.md` 提到 `DATA-SCHEMA.md` 不是網站內容 | grep |
 | CB12 | git 工作區乾淨、且 `git remote` 為空 | `git status --porcelain` 與 `git remote` 皆無輸出 |
 
 **不得為了通過驗收而放寬標準、刪減章節、改寫元素 id、或修改驗收條件本身。**

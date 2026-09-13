@@ -97,6 +97,21 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
 # B 計畫貴批次（EXPENSIVE-PLAN-B.md）
 
 依 EXPENSIVE-PLAN-B.md §0.5，逐階段記錄修正輪數、錯誤指紋與各驗收項失敗次數。
+
+## B 計畫成本摘要
+
+| 階段 | 修正輪數 | 觸發過的錯誤指紋 |
+|---|---|---|
+| T0 前置檢查 | 0 | 0 種 |
+| T1 抽出 web/pipeline.py | 0 | 0 種 |
+| T2 解析器換成 html.parser | 0 | 0 種 |
+| T3 名冊快取來源 | 0 | 0 種 |
+| T4 打包腳本 | 0 | 0 種 |
+| T5 前端與 service worker | 1 | 1 種 |
+| T6 完整驗收 | 0 | 0 種 |
+| **合計** | **1** | **1 種** |
+
+沒有任何一枚錯誤指紋重複出現，斷路器未觸發，BLOCKERS.md 未產生。
 開工前基準：`./verify.sh` L1 六項全過、L2 93 個測試通過（全套共收集 99 個，6 個為 L3）。
 
 ## T0 前置檢查
@@ -152,3 +167,13 @@ CHEAP-PLAN-B.md §2 的 6 個交接檔案全部存在：`docs/index.html` 1586 B
 - 額外冒煙（不計入自動驗收）：以 CPython 執行 app.js 內嵌的 Python 膠水程式、用假物件模擬 Uint8Array 的 `to_bytes()`，
   在解開的 zip 目錄內跑五份 MHT：八階段全成功、39 筆事件、報表 56,894 bytes
 - `./verify.sh` 通過：L1 九項、L2 112 個測試
+
+## T6 完整驗收
+
+- 修正輪數：0
+- 錯誤指紋：無
+- `./verify.sh all` 一次通過：L1 九項、L2 112 個測試、L3 端到端 6 個測試與覆蓋率 96.68%（共 118 個，既有 99 個無退化）
+- 既有端到端測試重寫了 `out/report.html`、`out/run.ndjson`，比對只差時間戳，依「`out/` 不動」以 git 還原
+- 另以隨機埠啟動本機窗口，`/` 與 `/api/stages` 正常回應
+- 產出 `ACCEPTANCE-B.md`、`CHECKLIST-B.md`、`out/preview-web.md`
+- 各驗收項失敗次數：V-B01–V-B19 皆 0

@@ -122,3 +122,10 @@ CHEAP-PLAN-B.md §2 的 6 個交接檔案全部存在：`docs/index.html` 1586 B
 - 7 個 `.py` 共 10 處 `'lxml'` 改為 `'html.parser'`；測試只改了解析器參數，斷言值一個都沒動
 - `./verify.sh` 一次通過：L1 八項、L2 96 個測試（含黃金值 `test_golden_values` 52 打數 8 安打）
 - 各驗收項失敗次數：V-B04 0
+
+## T3 名冊快取來源 adapters/roster_cache.py
+
+- 修正輪數：0
+- 錯誤指紋：無
+- `./verify.sh` 一次通過：L1 八項、L2 100 個測試
+- 各驗收項失敗次數：V-B10 0、V-B11 0

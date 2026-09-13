@@ -46,7 +46,7 @@ def _row_from_label(holder):
 
 #解析球團配球，回傳 {球團: {'合計'|'対右投手'|'対左投手': [{count, mix}]}}
 def parse_team_mix(html_text):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     headings = _headings(soup)
     #只保留球團標題與左右投標題，其餘（如頁面大標）忽略
     marks = list(headings)

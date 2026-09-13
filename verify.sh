@@ -60,6 +60,7 @@ grep_absent_in() {
   local target
   #目標不存在時 grep 回傳 2，反向後會變成假通過，所以先確認存在
   for target in "$@"; do
+    case "$target" in -*) continue ;; esac
     [ -e "$target" ] || { echo "檢查目標不存在：$target"; return 1; }
   done
   ! grep -rnE "$pattern" "$@"
@@ -67,6 +68,9 @@ grep_absent_in() {
 #V-B03 Pyodide 沒有可用的 socket，管線必須能在瀏覽器內 import
 check "V-B03 web/pipeline.py 未 import http.server/socket/socketserver/threading" \
   grep_absent_in '^[[:space:]]*(import|from)[[:space:]]+(http\.server|http|socketserver|socket|threading)\b' web/pipeline.py
+#V-B04 lxml 是 C 擴充，換成標準庫 html.parser 讓瀏覽器端的載入量與相依性降到最低
+check "V-B04 全專案 .py 無 'lxml' 解析器字串" \
+  grep_absent_in "[\"']lxml[\"']" --include='*.py' .
 
 if [ "$FAILED" -ne 0 ]; then
   echo "L1 未通過，停止後續層級"

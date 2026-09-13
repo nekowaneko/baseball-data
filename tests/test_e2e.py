@@ -30,7 +30,7 @@ def test_report_html(outcome):
     result, _ = outcome
     with open(result['output'], encoding='utf-8') as f:
         html = f.read()
-    soup = BeautifulSoup(html, 'lxml')
+    soup = BeautifulSoup(html, 'html.parser')
     headings = [h.get_text(strip=True) for h in soup.find_all(['h1', 'h2', 'h3'])]
     assert '綜觀' in headings
     assert '微觀' in headings
@@ -44,7 +44,7 @@ def test_report_html(outcome):
 def test_report_controls(outcome):
     result, _ = outcome
     with open(result['output'], encoding='utf-8') as f:
-        soup = BeautifulSoup(f.read(), 'lxml')
+        soup = BeautifulSoup(f.read(), 'html.parser')
     hands = [b['data-hand'] for b in soup.select('.switch button')]
     assert hands == ['L', 'R']
     sorts = [b['data-sort'] for b in soup.select('#sortbar button')]

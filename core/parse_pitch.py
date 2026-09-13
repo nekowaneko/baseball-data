@@ -41,7 +41,7 @@ def _row_to_pitch(head, cells):
 
 #解析球種別打擊成績，回傳 {'対右投手': [{pitch, share, ...}], '対左投手': [...]}
 def parse_pitch_types(html_text):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     result = {}
     for table in soup.find_all('table'):
         if not _is_pitch_table(table):

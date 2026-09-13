@@ -45,7 +45,7 @@ def _row_to_pitcher(head, cells):
 
 #解析逐投手對戰成績，回傳 {球團: [{name, ops, avg, ab, h, hr, so}]}
 def parse_vs_pitchers(html_text):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     result = {}
     for table in soup.find_all('table'):
         if not _is_pitcher_table(table):

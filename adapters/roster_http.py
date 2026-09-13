@@ -37,7 +37,7 @@ def fetch_html(code, timeout=20):
 #解析名冊表格：NPB 是一張大表中間插入分段標題列，標題列的姓名欄就是守備位置名
 #（監督／投手／捕手／内野手／外野手），且支配下與育成各一張表，兩張都要收
 def parse_roster(html_text, sections=PITCHER_SECTIONS):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     players = []
     for table in soup.find_all('table'):
         section = None

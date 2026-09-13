@@ -108,7 +108,7 @@ def test_render_html(template):
         {}, {}, {'order': [], 'colors': {}, 'zh': {}}, {},
         '2026-09-12 12:00', player='林 安可')
     html = render.render_html(data, template)
-    soup = BeautifulSoup(html, 'lxml')
+    soup = BeautifulSoup(html, 'html.parser')
     headings = [h.get_text(strip=True) for h in soup.find_all(['h2', 'h3'])]
     assert '綜觀' in headings
     assert '微觀' in headings

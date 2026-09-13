@@ -47,7 +47,7 @@ def _row_totals(head, cells):
 
 #解析「対左右別の対戦成績」，回傳 {'R': {ab, h, hr}, 'L': {...}, 'U': {...}}
 def parse_split_totals(html_text):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     table = _find_table(soup, '条件')
     if table is None:
         return {}
@@ -68,7 +68,7 @@ def parse_split_totals(html_text):
 #解析「対左右別の対戦成績」的顯示欄位，回傳 {'R': {ops, avg, obp, k, ab, ...}, 'L': {...}}
 #與 parse_split_totals 的差別：這裡連率值一起帶走，只為了畫面呈現，不參與任何計算
 def parse_split_display(html_text):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     table = _find_table(soup, '条件')
     if table is None:
         return {}
@@ -89,7 +89,7 @@ def parse_split_display(html_text):
 
 #解析「チーム別の対戦成績」，回傳 {球團: {ab, h, hr}}，未對戰過的球團不列入
 def parse_team_totals(html_text):
-    soup = BeautifulSoup(html_text, 'lxml')
+    soup = BeautifulSoup(html_text, 'html.parser')
     table = _find_table(soup, 'チーム')
     if table is None:
         return {}

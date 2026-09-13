@@ -91,3 +91,34 @@ CHEAP-PLAN.md §2 交接清單全部存在且非空（README.md、config/ 四檔
 
 三者都是「驗收全程不連網」造成的盲區：`roster_http.py` 先前完全沒有測試。現已有 `tests/test_roster_http.py`
 以真實頁面快照離線驗證，解析結果與既有 82 筆左右手對照表在樂天這一隊完全一致（17/17 相符）。
+
+---
+
+# B 計畫貴批次（EXPENSIVE-PLAN-B.md）
+
+依 EXPENSIVE-PLAN-B.md §0.5，逐階段記錄修正輪數、錯誤指紋與各驗收項失敗次數。
+開工前基準：`./verify.sh` L1 六項全過、L2 93 個測試通過（全套共收集 99 個，6 個為 L3）。
+
+## T0 前置檢查
+
+CHEAP-PLAN-B.md §2 的 6 個交接檔案全部存在：`docs/index.html` 1586 B、`docs/style.css` 2619 B、
+`docs/manifest.webmanifest` 235 B、`docs/README.md` 633 B、`DEPLOY.md` 1916 B、`docs/.nojekyll` 0 B。
+`.nojekyll` 依便宜批次 §3.4 本來就是空檔案，視為滿足（見 DECISIONS.md）。
+
+- 修正輪數：0
+- 錯誤指紋：無
+
+## T1 抽出 web/pipeline.py
+
+- 修正輪數：0
+- 錯誤指紋：無
+- `./verify.sh` 一次通過：L1 七項、L2 96 個測試
+- 各驗收項失敗次數：V-B03 0、V-B08 0、V-B09 0、V05 0
+
+## T2 解析器換成 html.parser
+
+- 修正輪數：0
+- 錯誤指紋：無
+- 7 個 `.py` 共 10 處 `'lxml'` 改為 `'html.parser'`；測試只改了解析器參數，斷言值一個都沒動
+- `./verify.sh` 一次通過：L1 八項、L2 96 個測試（含黃金值 `test_golden_values` 52 打數 8 安打）
+- 各驗收項失敗次數：V-B04 0

@@ -10,6 +10,8 @@ MODULES = [
     'core.mht', 'core.parse_pitch', 'core.parse_mix', 'core.parse_vs',
     'core.parse_basic', 'core.audit', 'core.match', 'core.aggregate', 'core.render',
     'adapters.roster', 'adapters.roster_http', 'web.server',
+    #B 計畫新增的模組
+    'web.pipeline', 'adapters.roster_cache', 'tools.build_web',
 ]
 
 

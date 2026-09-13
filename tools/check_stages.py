@@ -25,6 +25,13 @@ def check_server():
         return None
     with open(path, encoding='utf-8') as f:
         source = f.read()
+    #B 計畫把管線搬到 web/pipeline.py：server.py 必須從那裡取 run_pipeline，判定邏輯改在 pipeline.py 檢查
+    if re.search(r'from web\.pipeline import \([^)]*\brun_pipeline\b', source):
+        with open(os.path.join(ROOT, 'web', 'pipeline.py'), encoding='utf-8') as f:
+            source = f.read()
+        if not re.search(r"stage\['fatal'\]", source):
+            return 'web/pipeline.py 的 run_pipeline 未依 fatal 旗標判定整體成敗'
+        return None
     if not re.search(r"fatal", source):
         return 'server.py 未依 fatal 旗標判定整體成敗'
     return None

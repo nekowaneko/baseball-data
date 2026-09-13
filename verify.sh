@@ -53,6 +53,21 @@ check "V05 僅 S8 fatal 且 server.py 依此判定" python tools/check_stages.py
 #V20 倉庫要公開，版控檔案不得含本機絕對路徑或使用者目錄
 check "V20 版控檔案無本機絕對路徑" no_local_paths
 
+#B 計畫追加項（V01–V20 不動，只往下加）
+#grep 反向檢查指定路徑：命中即失敗，路徑可為檔案或目錄
+grep_absent_in() {
+  local pattern="$1"; shift
+  local target
+  #目標不存在時 grep 回傳 2，反向後會變成假通過，所以先確認存在
+  for target in "$@"; do
+    [ -e "$target" ] || { echo "檢查目標不存在：$target"; return 1; }
+  done
+  ! grep -rnE "$pattern" "$@"
+}
+#V-B03 Pyodide 沒有可用的 socket，管線必須能在瀏覽器內 import
+check "V-B03 web/pipeline.py 未 import http.server/socket/socketserver/threading" \
+  grep_absent_in '^[[:space:]]*(import|from)[[:space:]]+(http\.server|http|socketserver|socket|threading)\b' web/pipeline.py
+
 if [ "$FAILED" -ne 0 ]; then
   echo "L1 未通過，停止後續層級"
   exit 1

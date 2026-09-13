@@ -6,7 +6,7 @@ import re
 import pytest
 
 from adapters.roster import StubRosterSource
-from web import server
+from web import pipeline, server
 
 MHT_NAMES = ['basic', 'mix', 'pitch', 'situational', 'vs']
 
@@ -88,7 +88,8 @@ def test_stage_failure_does_not_abort(mht_files, config, fixtures_dir, tmp_path,
     def boom(*args, **kwargs):
         raise RuntimeError('注入的錯誤')
 
-    monkeypatch.setattr(server.audit, 'audit_totals', boom)
+    #管線搬到 web.pipeline 後，階段函式在該命名空間解析 audit，patch 目標跟著改
+    monkeypatch.setattr(pipeline.audit, 'audit_totals', boom)
     log = server.RunLog(path=str(tmp_path / 'run.ndjson'))
     result = server.run_pipeline(mht_files, StubRosterSource(fixtures_dir), config,
                                  log, str(tmp_path / 'report.html'))
@@ -105,7 +106,8 @@ def test_fatal_stage_fails_whole_run(mht_files, config, fixtures_dir, tmp_path, 
     def boom(*args, **kwargs):
         raise RuntimeError('產出失敗')
 
-    monkeypatch.setattr(server, 'render_html', boom)
+    #run_pipeline 在 web.pipeline 的命名空間解析 render_html，patch 到 server 不會生效
+    monkeypatch.setattr(pipeline, 'render_html', boom)
     log = server.RunLog(path=str(tmp_path / 'run.ndjson'))
     result = server.run_pipeline(mht_files, StubRosterSource(fixtures_dir), config,
                                  log, str(tmp_path / 'report.html'))

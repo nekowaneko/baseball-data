@@ -190,9 +190,9 @@ payload 目錄未來可能出現這類檔名，先關掉比較保險。
 | CB09 | `README.md` 既有的「用手機開」一節仍存在 | grep |
 | CB10 | 無 `[[待填` 殘留在應為實質內容的檔案（`index.html`、`style.css`、`DEPLOY.md`） | grep |
 | CB11 | `docs/` 下沒有任何 `.py` 檔（本批次不碰程式） | find |
-| CB13 | `docs/DATA-SCHEMA.md` 與 `docs/KNOWN-GAPS.md` 仍存在且內容未被更動 | 比對 git diff 為空 |
-| CB14 | `docs/README.md` 提到 `DATA-SCHEMA.md` 不是網站內容 | grep |
-| CB12 | git 工作區乾淨、且 `git remote` 為空 | `git status --porcelain` 與 `git remote` 皆無輸出 |
+| CB12 | `docs/DATA-SCHEMA.md` 與 `docs/KNOWN-GAPS.md` 仍存在且內容未被更動 | `git diff --name-only` 不含這兩檔 |
+| CB13 | `docs/README.md` 提到 `DATA-SCHEMA.md` 不是網站內容 | grep |
+| CB14 | git 工作區乾淨、且 `git remote` 為空 | `git status --porcelain` 與 `git remote` 皆無輸出 |
 
 **不得為了通過驗收而放寬標準、刪減章節、改寫元素 id、或修改驗收條件本身。**
 
@@ -213,7 +213,7 @@ payload 目錄未來可能出現這類檔名，先關掉比較保險。
 
     ✅ B 計畫便宜批次完成，請查核。
 
-    驗收結果：CB01–CB12 全部通過（或：通過 n 項，m 項未通過，詳見 BLOCKERS.md）
+    驗收結果：CB01–CB14 全部通過（或：通過 n 項，m 項未通過，詳見 BLOCKERS.md）
     產出檔案：<n> 個
     Commit 數：<n>
     補齊次數：<n>

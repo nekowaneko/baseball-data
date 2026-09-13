@@ -1,6 +1,7 @@
 #管線行為測試：階段降級、日誌格式與整體成敗判定
 import json
 import os
+import re
 
 import pytest
 
@@ -145,3 +146,24 @@ def test_parse_multipart():
     files = server.parse_multipart(body, 'multipart/form-data; boundary=X')
     assert files == [('a.mht', b'HELLO')]
     assert server.parse_multipart(body, 'application/json') == []
+
+
+#log 寫進 run.ndjson 會進版控，不得含本機絕對路徑（倉庫要公開）
+def test_log_path_hides_local_paths(tmp_path):
+    from tests.conftest import ROOT
+
+    assert server.log_path(os.path.join(ROOT, 'out', 'report.html')) == 'out/report.html'
+    #跑到倉庫外（例如測試的暫存目錄）只留檔名，不得洩漏使用者目錄
+    outside = server.log_path(str(tmp_path / 'report.html'))
+    assert outside == 'report.html'
+    assert 'Users' not in outside
+
+
+#整份日誌不得出現磁碟機代號或家目錄樣式的絕對路徑
+def test_run_log_has_no_absolute_path(run_result):
+    _, log, _ = run_result
+    blob = json.dumps(log.events, ensure_ascii=False)
+    assert not re.search(r'[A-Za-z]:\\', blob)
+    assert '/Users/' not in blob
+    assert '/home/' not in blob
+

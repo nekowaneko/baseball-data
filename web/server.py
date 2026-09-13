@@ -170,6 +170,16 @@ def s7_cross_check(ctx):
                          f"{row['official_h']} 安打", row)
 
 
+#log 只寫倉庫相對路徑：run.ndjson 會進版控，不能把本機絕對路徑（含使用者名稱）寫進去
+def log_path(path, root=ROOT):
+    try:
+        rel = os.path.relpath(path, root)
+    except ValueError:      #Windows 上跨磁碟機時 relpath 會拋例外
+        return os.path.basename(path)
+    #跑出倉庫外（例如測試的暫存目錄）就只留檔名，同樣不洩漏路徑
+    return os.path.basename(path) if rel.startswith('..') else rel.replace(os.sep, '/')
+
+
 #S8 產出 HTML：唯一失敗就算整體失敗的階段
 def s8_render(ctx):
     with open(os.path.join(ROOT, 'web', REPORT_TEMPLATE), encoding='utf-8') as f:
@@ -184,7 +194,7 @@ def s8_render(ctx):
     os.makedirs(os.path.dirname(ctx['output_path']), exist_ok=True)
     with open(ctx['output_path'], 'w', encoding='utf-8') as f:
         f.write(html)
-    ctx['log'].write('S8', 'info', f"產出 {ctx['output_path']}")
+    ctx['log'].write('S8', 'info', f"產出 {log_path(ctx['output_path'])}")
 
 
 #八個階段的實作，順序即執行順序

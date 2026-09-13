@@ -27,6 +27,18 @@ grep_absent() {
   ! grep -rnE "$1" core/ --include='*.py' > /dev/null 2>&1
 }
 
+#公開倉庫檢查：任何進版控的檔案都不得洩漏本機路徑，命中即失敗
+no_local_paths() {
+  local hits
+  hits=$(git ls-files -z | xargs -0 grep -lIE '[A-Za-z]:\\Users|/Users/[A-Za-z]|/home/[a-z]' 2>/dev/null)
+  if [ -n "$hits" ]; then
+    echo "以下版控檔案含本機絕對路徑："
+    echo "$hits"
+    return 1
+  fi
+  return 0
+}
+
 echo "=== L1 靜態與結構檢查 ==="
 #V01 core/ 不得碰網路模組
 check "V01 core/ 無網路模組 import" grep_absent '^[[:space:]]*(import|from)[[:space:]]+(requests|urllib|http|socket|ssl|ftplib|telnetlib|asyncio)\b'
@@ -38,6 +50,8 @@ check "V03 core/ 無 open( 與 os.environ" grep_absent '(\bopen\(|os\.environ|ge
 check "V04 全模組可匯入" python tools/check_imports.py
 #V05 階段定義與整體成敗判定
 check "V05 僅 S8 fatal 且 server.py 依此判定" python tools/check_stages.py
+#V20 倉庫要公開，版控檔案不得含本機絕對路徑或使用者目錄
+check "V20 版控檔案無本機絕對路徑" no_local_paths
 
 if [ "$FAILED" -ne 0 ]; then
   echo "L1 未通過，停止後續層級"

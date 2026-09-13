@@ -22,3 +22,6 @@ cache/*
 
 # 每次執行產生的即時產物（report-<run>.html），固定產物 out/report.html 仍進版控
 out/report-*.html
+
+# 本機資訊代碼對照表：倉庫要公開，實際值只留在本機
+LOCAL-CODEBOOK.md

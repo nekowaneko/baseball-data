@@ -114,6 +114,28 @@ def s2_parse(ctx):
         except Exception as error:  #該分頁標記失敗，其餘繼續
             ctx['log'].write('S2', 'error', f'{key} 解析失敗：{error}')
             ctx['errors'].append({'stage': 'S2', 'msg': f'{key} 解析失敗：{error}'})
+    _fill_player(ctx)
+
+
+#從分頁標題補上球員名，報表標題才知道是誰。呼叫端已指定就不覆蓋
+def _fill_player(ctx):
+    if ctx['player']:
+        return
+    pages = ctx['pages']
+    #五個分頁的標題都一樣，basic 缺了也還有別的可用
+    for kind in ['basic', 'pitch', 'vs', 'mix', 'situational']:
+        if kind not in pages:
+            continue
+        try:
+            name = parse_basic.parse_player_name(pages[kind])
+        except Exception as error:  #抓名字失敗不該影響整份報表
+            ctx['log'].write('S2', 'warn', f'球員名解析失敗：{error}')
+            return
+        if name:
+            ctx['player'] = name
+            ctx['log'].write('S2', 'info', f'球員名判定為 {name}', {'來源分頁': kind})
+            return
+    ctx['log'].write('S2', 'warn', '分頁標題認不出球員名，報表標題不帶名字')
 
 
 #S3 一致性稽核：永不中止，差異寫進報告
@@ -229,5 +251,6 @@ def run_pipeline(files, roster_source, config, log=None, output_path=None, playe
             ok = False
     return {'ok': ok, 'stages': results, 'errors': ctx['errors'],
             'skipped': ctx['skipped'], 'output': ctx['output_path'],
+            'player': ctx['player'],
             'audit': ctx['audit'], 'unmatched': ctx['unmatched'],
             'cross': ctx['cross'], 'context': ctx}

@@ -169,3 +169,11 @@ def test_run_log_has_no_absolute_path(run_result):
     assert '/Users/' not in blob
     assert '/home/' not in blob
 
+
+
+#呼叫端沒指定球員名時，管線要自己從分頁標題判讀出來（報表標題靠這個）
+def test_player_detected_from_pages(mht_files, config, fixtures_dir, tmp_path):
+    log = server.RunLog(path=str(tmp_path / 'run.ndjson'))
+    result = server.run_pipeline(mht_files, StubRosterSource(fixtures_dir), config,
+                                 log, str(tmp_path / 'report.html'))
+    assert result['player'] == '林安可'

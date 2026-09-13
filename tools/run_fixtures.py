@@ -11,7 +11,7 @@ from adapters.roster import StubRosterSource
 from web import server
 
 FIXTURE_PAGES = ['basic', 'mix', 'pitch', 'situational', 'vs']
-PLAYER = '林 安可'
+#球員名改由管線自己從分頁標題判讀，這裡不再寫死，端到端才會真的走到那段
 
 
 #讀入 fixture 的五份 MHT，檔名刻意取成不可靠的形式，驗證分類不看檔名
@@ -35,7 +35,7 @@ def run(root=ROOT, out_dir=None):
     source = StubRosterSource(os.path.join(root, 'tests', 'fixtures'))
     log = server.RunLog(path=log_path)
     result = server.run_pipeline(load_fixture_files(root), source, config, log,
-                                 os.path.join(out_dir, 'report.html'), player=PLAYER)
+                                 os.path.join(out_dir, 'report.html'))
     write_preview(result, log, out_dir)
     return result
 

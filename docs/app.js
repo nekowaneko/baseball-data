@@ -27,11 +27,12 @@ def web_run(entries, sink, output_path):
     result = pipeline.run_pipeline(files, CachedRosterSource(), pipeline.load_config(),
                                    log, output_path)
     return json.dumps({'ok': result['ok'], 'stages': result['stages'],
-                       'skipped': result['skipped'], 'errors': result['errors']},
+                       'skipped': result['skipped'], 'errors': result['errors'],
+                       'player': result['player']},
                       ensure_ascii=False)
 `
 
-const state = { pyodide: null, picked: [], maxBytes: 20 * MB, reportUrl: null }
+const state = { pyodide: null, picked: [], maxBytes: 20 * MB, reportUrl: null, player: '' }
 
 const el = (id) => document.getElementById(id)
 
@@ -130,10 +131,11 @@ const resetProgress = () => {
   })
 }
 
-//產出檔名帶本地時間，存到手機裡才分得出是哪一次
+//產出檔名帶球員名與本地時間，存到手機裡才分得出是誰的、哪一次
 const reportName = (now) => {
   const pad = (n) => String(n).padStart(2, '0')
-  return `report-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
+  const who = state.player || ''
+  return `${who}配球對照表-${now.getFullYear()}${pad(now.getMonth() + 1)}${pad(now.getDate())}` +
     `-${pad(now.getHours())}${pad(now.getMinutes())}.html`
 }
 
@@ -143,7 +145,10 @@ const showReport = () => {
   const blob = new Blob([bytes], { type: 'text/html;charset=utf-8' })
   if (state.reportUrl) URL.revokeObjectURL(state.reportUrl)
   state.reportUrl = URL.createObjectURL(blob)
+  const label = `${state.player || ''}配球對照表`
   const open = el('open-report')
+  open.textContent = `開啟${label}`
+  el('save-report').textContent = `下載${label}`
   open.href = state.reportUrl
   open.target = '_blank'
   open.rel = 'noopener'
@@ -178,6 +183,7 @@ const run = async () => {
     }
     const result = JSON.parse(webRun(entries, sink, OUTPUT_PATH))
     webRun.destroy()
+    state.player = result.player || ''
     if (result.ok) {
       showReport()
     } else {

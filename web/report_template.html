@@ -483,7 +483,7 @@ document.querySelectorAll('.qm').forEach(btn => {
 //頁首：球員名與產出時間都來自管線，不寫死
 const renderHead = () => {
   const player = DATA.player || ''
-  const title = player ? `${player} 配球對照表` : '配球對照表'
+  const title = player ? `${player}配球對照表` : '配球對照表'
   document.title = title
   document.getElementById('title').textContent = title
   document.getElementById('subtitle').textContent =

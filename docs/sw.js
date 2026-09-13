@@ -1,8 +1,10 @@
 //快取名稱含版本：cache-first 會一直吃舊檔，改了任何網站檔案或重新打包 payload 都要把這裡加一
-const VERSION = 'v1'
+const VERSION = 'v2'
 const CACHE_NAME = `pitch-window-${VERSION}`
 //只快取自己網域的五個檔；Pyodide 的 CDN 資源跨網域又大，交給瀏覽器自己的 HTTP 快取
-const ASSETS = ['index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'payload/pipeline.zip']
+const ASSETS = ['index.html', 'style.css', 'app.js', 'manifest.webmanifest', 'payload/pipeline.zip',
+  'icon.svg', 'icons/icon-32.png', 'icons/icon-180.png', 'icons/icon-192.png',
+  'icons/icon-512.png', 'icons/apple-touch-icon.png']
 
 self.addEventListener('install', (event) => {
   event.waitUntil(caches.open(CACHE_NAME).then((cache) => cache.addAll(ASSETS)))

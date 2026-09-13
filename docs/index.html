@@ -7,6 +7,10 @@
 <link rel="stylesheet" href="style.css">
 <link rel="manifest" href="manifest.webmanifest">
 <meta name="theme-color" content="#0B2F62">
+<link rel="icon" href="icons/icon-32.png" sizes="32x32" type="image/png">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<!-- iOS 不讀 manifest 的 icons，加到主畫面時只認這一行 -->
+<link rel="apple-touch-icon" href="icons/apple-touch-icon.png">
 </head>
 <body>
 <div class="wrap">
@@ -42,8 +46,8 @@
 <pre id="log" hidden></pre>
 
 <div id="result" hidden>
-<a id="open-report" href="#">開啟報告</a>
-<a id="save-report" download>下載報告</a>
+<a id="open-report" href="#">開啟配球對照表</a>
+<a id="save-report" download>下載配球對照表</a>
 </div>
 
 <div id="error" hidden></div>

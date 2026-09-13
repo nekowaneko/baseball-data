@@ -1,0 +1,41 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" width="512" height="512" role="img" aria-label="棒球與球棒">
+  <!-- 底色用西武主場的レジェンドブルー，與 manifest 的 theme_color 一致 -->
+  <rect width="512" height="512" fill="#0B2F62"/>
+
+  <!-- 內層的 translate(19 34) 是把球與球棒的合成重心挪回畫面正中央；
+       挪完之後所有筆畫都落在中心半徑 180 以內，小於 maskable 要求的 205，
+       所以同一張圖可以同時當一般圖示與 maskable 圖示，不會被系統裁掉邊角 -->
+  <g transform="translate(256 256)">
+   <g transform="translate(19 34)">
+
+    <!-- 球棒：由左下往右上，握把在左下、棒頭在右上 -->
+    <g transform="rotate(-38)">
+      <!-- 棒身：握把細、往棒頭漸粗 -->
+      <path d="M -168 -10 L -70 -13 Q 20 -38 152 -33 Q 166 0 152 33 Q 20 38 -70 13 L -168 10 Z"
+            fill="#D2A03A"/>
+      <!-- 握把末端的護球頭 -->
+      <circle cx="-176" cy="0" r="19" fill="#D2A03A"/>
+      <!-- 握把與棒身的分界，一道暗線就夠，小尺寸下不會糊掉 -->
+      <path d="M -70 -13 L -70 13" stroke="#A8781A" stroke-width="7" stroke-linecap="round"/>
+    </g>
+
+    <!-- 棒球：放在左上，與球棒交錯 -->
+    <g transform="translate(-96 -92)">
+      <circle cx="0" cy="0" r="78" fill="#FFFFFF"/>
+      <!-- 兩道紅色縫線，往內彎 -->
+      <path d="M -47 -62 Q -14 0 -47 62" fill="none" stroke="#9B2C3B" stroke-width="9" stroke-linecap="round"/>
+      <path d="M 47 -62 Q 14 0 47 62" fill="none" stroke="#9B2C3B" stroke-width="9" stroke-linecap="round"/>
+      <!-- 縫線針腳：左右各三針，簡化到小尺寸也看得出是棒球 -->
+      <g stroke="#9B2C3B" stroke-width="6" stroke-linecap="round">
+        <path d="M -34 -34 L -18 -40"/>
+        <path d="M -27 0 L -10 0"/>
+        <path d="M -34 34 L -18 40"/>
+        <path d="M 34 -34 L 18 -40"/>
+        <path d="M 27 0 L 10 0"/>
+        <path d="M 34 34 L 18 40"/>
+      </g>
+    </g>
+
+   </g>
+  </g>
+</svg>

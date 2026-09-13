@@ -35,7 +35,8 @@ def test_report_html(outcome):
     assert '綜觀' in headings
     assert '微觀' in headings
     assert '資料的已知缺口' in headings
-    assert '林 安可' in html
+    #球員名由管線從分頁標題判讀，去空白後直接接「配球對照表」
+    assert '"player": "林安可"' in html or '"player":"林安可"' in html
     assert len(html) > 30000  #資料確實內嵌，不是空殼
 
 

@@ -1,4 +1,7 @@
 #基本成績分頁解析：對左右別合計與球團別合計（稽核與交叉驗證的官方值來源）
+import re
+import unicodedata
+
 from bs4 import BeautifulSoup
 
 from core.parse_vs import to_int
@@ -104,3 +107,19 @@ def parse_team_totals(html_text):
         if values is not None:
             totals[cells[0]] = values
     return totals
+
+
+#Short-Stop 每個分頁的標題格式都是「林 安可 成績 2026 | Short-Stop」，
+#球員名在「成績」與年份之前。抓不到就回空字串，讓報表退回沒有名字的標題，絕不猜。
+PLAYER_TITLE = re.compile(r'^\s*(?P<name>.+?)\s*成績\s*\d{4}\s*(?:\||$)')
+
+
+#解析球員名。回傳去掉所有空白的顯示名（例：林安可），供報表標題使用
+def parse_player_name(html_text):
+    soup = BeautifulSoup(html_text, 'html.parser')
+    title = soup.title.get_text(strip=True) if soup.title else ''
+    matched = PLAYER_TITLE.match(unicodedata.normalize('NFKC', title))
+    if not matched:
+        return ''
+    #「林 安可」在中文語境寫成「林安可」，去空白後才能直接接上「配球對照表」
+    return ''.join(matched.group('name').split())

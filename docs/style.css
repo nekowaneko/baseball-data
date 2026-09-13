@@ -52,9 +52,23 @@ button:focus-visible{outline:3px solid var(--sky); outline-offset:2px}
   list-style:decimal; padding-left:1.4em; background:var(--paper2);
   border-radius:8px; padding-top:14px; padding-bottom:14px; padding-right:14px;
 }
-#progress li{padding:6px 0; color:var(--muted); font-size:.92rem}
-#progress li.done{color:var(--ink); font-weight:bold}
+#progress li{
+  padding:6px 0; color:var(--muted); font-size:.92rem;
+  display:flex; align-items:center; gap:8px;
+}
+/* 狀態記號固定寬度，八列的文字才會對齊成一直線 */
+#progress li::after{
+  content:''; flex:none; width:1.3em; text-align:center;
+  font-weight:bold; margin-left:auto;
+}
 #progress li.active{color:var(--sky); font-weight:bold}
+#progress li.active::after{content:'…'; color:var(--sky)}
+#progress li.done{color:var(--ink); font-weight:bold}
+/* 完成打綠勾。綠色只在這裡出現，掃一眼就知道哪幾站過了 */
+#progress li.done::after{content:'✓'; color:#1E7A46}
+/* 失敗的那站也帶 done，用屬性選擇器蓋掉，免得失敗也打勾 */
+#progress li.done[data-failed]{color:var(--warn)}
+#progress li.done[data-failed]::after{content:'✕'; color:var(--warn)}
 
 #log{
   background:var(--ink); color:var(--paper2); font-size:.78rem;

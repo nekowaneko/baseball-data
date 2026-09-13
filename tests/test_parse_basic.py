@@ -41,3 +41,14 @@ def test_missing_table():
     assert parse_basic.parse_split_totals('<html></html>') == {}
     assert parse_basic.parse_team_totals('<html></html>') == {}
     assert parse_basic.parse_split_display('<html></html>') == {}
+
+
+#從分頁標題抓球員名，去空白後可直接接上「配球對照表」
+def test_parse_player_name(page):
+    assert parse_basic.parse_player_name(page('basic')) == '林安可'
+
+
+#標題認不出來時回空字串，不猜、不拿檔名湊
+def test_parse_player_name_unknown():
+    assert parse_basic.parse_player_name('<html><head><title>沒有格式</title></head></html>') == ''
+    assert parse_basic.parse_player_name('<html></html>') == ''

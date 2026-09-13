@@ -1,0 +1,11 @@
+{
+  "name": "配球資料處理窗口",
+  "short_name": "配球窗口",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#FFFFFF",
+  "theme_color": "#0B2F62",
+  "lang": "zh-Hant",
+  "icons": []
+}

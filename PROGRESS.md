@@ -139,3 +139,16 @@ CHEAP-PLAN-B.md §2 的 6 個交接檔案全部存在：`docs/index.html` 1586 B
   zip 解到空目錄後能否只靠 zip 內容跑完八階段（模擬 Pyodide 的虛擬檔案系統）
 - `./verify.sh` 一次通過：L1 八項、L2 108 個測試
 - 各驗收項失敗次數：V-B06 0、V-B12 0、V-B13 0
+
+## T5 瀏覽器前端 docs/app.js 與 docs/sw.js
+
+- 修正輪數：1
+- 錯誤指紋：
+  - `a9987f88`：`AssertionError: assert 'micropip' not in source`——新寫的 V-B14 測試用整檔子字串比對，
+    撞到的是 app.js 裡說明「不走 micropip」的註解，不是實際呼叫。修法：測試改比對真正的載入寫法
+    （`import micropip`、`loadPackage('micropip')`、`pyimport('micropip')`），app.js 不動。
+- 各驗收項失敗次數：V-B05 0、V-B14 1、V-B15 0
+- V-B05 的 grep 另以暫存目錄放入 `https://unpkg.com`、`localhost`、裸網域 `fonts.googleapis.com` 做反向測試，三者皆被抓出
+- 額外冒煙（不計入自動驗收）：以 CPython 執行 app.js 內嵌的 Python 膠水程式、用假物件模擬 Uint8Array 的 `to_bytes()`，
+  在解開的 zip 目錄內跑五份 MHT：八階段全成功、39 筆事件、報表 56,894 bytes
+- `./verify.sh` 通過：L1 九項、L2 112 個測試

@@ -72,6 +72,28 @@ check "V-B03 web/pipeline.py 未 import http.server/socket/socketserver/threadin
 check "V-B04 全專案 .py 無 'lxml' 解析器字串" \
   grep_absent_in "[\"']lxml[\"']" --include='*.py' .
 
+#靜態站自足檢查：docs/ 的網頁與腳本只准連 cdn.jsdelivr.net（Pyodide），其餘網域與本機位址一律違規
+docs_offsite_absent() {
+  local sources hits
+  sources=$(ls docs/*.js docs/*.html 2>/dev/null)
+  [ -n "$sources" ] || { echo "docs/ 下找不到任何 .js 或 .html"; return 1; }
+  hits=$(
+    grep -nE 'localhost|127\.0\.0\.1|0\.0\.0\.0' $sources
+    #任何「協定://主機」都取出主機比對白名單
+    grep -noE '[A-Za-z][A-Za-z0-9+.-]*://[^/"'"'"'`) ]*' $sources | grep -vE ':https://cdn\.jsdelivr\.net$'
+    #沒寫協定的裸網域（例如 fonts.googleapis.com）也要抓
+    grep -noE '\b[A-Za-z0-9-]+(\.[A-Za-z0-9-]+)*\.(com|net|org|io|dev|app|jp|tw|co|me|cloud|site)\b' $sources | grep -vE ':cdn\.jsdelivr\.net$'
+  )
+  if [ -n "$hits" ]; then
+    echo "docs/ 出現白名單以外的位址："
+    echo "$hits"
+    return 1
+  fi
+  return 0
+}
+#V-B05 靜態站必須自足，唯一例外是 Pyodide 的 CDN
+check "V-B05 docs/*.js、docs/*.html 只連 cdn.jsdelivr.net" docs_offsite_absent
+
 if [ "$FAILED" -ne 0 ]; then
   echo "L1 未通過，停止後續層級"
   exit 1

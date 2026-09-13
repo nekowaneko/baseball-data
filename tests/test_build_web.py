@@ -131,3 +131,59 @@ def test_unpacked_payload_runs_pipeline(built, tmp_path, fixtures_dir):
     assert report['stages'] == [True] * 8
     assert report['missing'] is False
     assert out.stat().st_size > 0
+
+
+#讀 docs/ 下的網站檔
+def read_docs(name):
+    with open(os.path.join(ROOT, 'docs', name), encoding='utf-8') as f:
+        return f.read()
+
+
+#V-B14 app.js 鎖定的 Pyodide 版本與 EXPENSIVE-PLAN-B.md §7 一致，來源是 jsDelivr
+def test_pyodide_version_pinned():
+    import re
+
+    source = read_docs('app.js')
+    assert re.search(r"const PYODIDE_VERSION = 'v314\.0\.6'", source)
+    assert 'https://cdn.jsdelivr.net/pyodide/${PYODIDE_VERSION}/full/' in source
+    #bs4 走 Pyodide 內建套件，不得連 PyPI；比對實際的載入寫法，註解裡提到 micropip 不算
+    assert "loadPackage('beautifulsoup4')" in source
+    assert not re.search(r"import\s+micropip|loadPackage\(\s*['\"]micropip|pyimport\(\s*['\"]micropip",
+                         source)
+
+
+#V-B15 index.html 的每個元素 id 都被 app.js 引用到（便宜批次 §3.1 表列 12 個）
+def test_index_ids_used_by_app():
+    import re
+
+    ids = re.findall(r'\bid="([^"]+)"', read_docs('index.html'))
+    assert set(ids) == {'boot', 'boot-msg', 'picker', 'files', 'filelist', 'run', 'progress',
+                        'log', 'result', 'open-report', 'save-report', 'error'}
+    source = read_docs('app.js')
+    for element_id in ids:
+        assert f"el('{element_id}')" in source, f'app.js 沒有用到 #{element_id}'
+
+
+#app.js 的管線呼叫接到 web.pipeline 與 CachedRosterSource，輸出寫到固定的虛擬路徑
+def test_app_wires_pipeline():
+    source = read_docs('app.js')
+    assert 'from web import pipeline' in source
+    assert 'CachedRosterSource()' in source
+    assert "const OUTPUT_PATH = '/out/report.html'" in source
+    assert "unpackArchive(await response.arrayBuffer(), 'zip')" in source
+    assert "fetch(PAYLOAD_URL)" in source and "const PAYLOAD_URL = 'payload/pipeline.zip'" in source
+    #整支 app.js 只有兩個 fetch 目標：同網域的 payload 與 CDN 腳本，沒有任何上傳
+    assert source.count('fetch(') == 1
+    assert "method: 'POST'" not in source
+
+
+#sw.js 快取五個網站檔、快取名稱含版本、啟用時清舊版，且不碰跨網域資源
+def test_service_worker():
+    source = read_docs('sw.js')
+    for asset in ('index.html', 'style.css', 'app.js', 'manifest.webmanifest',
+                  'payload/pipeline.zip'):
+        assert f"'{asset}'" in source
+    assert 'const CACHE_NAME = `pitch-window-${VERSION}`' in source
+    assert 'caches.delete' in source
+    assert 'self.location.origin' in source
+    assert 'jsdelivr' not in source

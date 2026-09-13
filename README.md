@@ -53,4 +53,4 @@ MHT 上傳 → 拆封分類(S1) → 解析各分頁(S2) → 一致性稽核(S3)
 → 交叉驗證(S7) → 產出 HTML(S8)
 ```
 
-階段定義見 [config/stages.json](config/stages.json)；中介檔案格式見 [docs/DATA-SCHEMA.md](docs/DATA-SCHEMA.md)；已知資料缺口見 [docs/KNOWN-GAPS.md](docs/KNOWN-GAPS.md)。除 S8 外，任何階段失敗只降級記錄、不中止流程。
+階段定義見 [config/stages.json](config/stages.json)；中介檔案格式見 [docs/DATA-SCHEMA.md](docs/DATA-SCHEMA.md)；已知資料缺口見 [docs/KNOWN-GAPS.md](docs/KNOWN-GAPS.md)。除 S8 外，任何階段失敗只降級記錄、不中止流程。 
